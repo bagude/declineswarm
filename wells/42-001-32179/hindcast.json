@@ -33,5 +33,20 @@
     "version": 7,
     "mape": 2.7889,
     "r2_outsample": -79.653
+  },
+  {
+    "version": 8,
+    "mape": 2.7889,
+    "r2_outsample": -79.653
+  },
+  {
+    "version": 9,
+    "mape": 2.79,
+    "r2_outsample": -79.719
+  },
+  {
+    "version": 10,
+    "mape": 2.4727,
+    "r2_outsample": -62.1272
   }
 ]

@@ -1,0 +1,1 @@
+{"version":1,"parameter":"none","value":"n/a","prev_mape":null,"new_mape":null,"improved":false,"observation":"Well 42-001-00001 has zero production across all 397 months (1993-01 through 2026-02). Evaluation returns error: Need at least 3 non-zero production months. No DCA optimization is possible for this well."}

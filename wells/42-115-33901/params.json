@@ -1,8 +1,8 @@
 {
-  "version": 1,
-  "description": "Baseline \u2014 global defaults",
+  "version": 3,
+  "description": "significance_threshold=0.35 -- with fit_months=4 model has too little decline data; lowering threshold from 0.50 to 0.35 may change peak detection for the Oct 2024 restim (15k->48k), giving more fit months",
   "preprocessing": {
-    "significance_threshold": 0.5,
+    "significance_threshold": 0.35,
     "smoothing_window": 3,
     "outlier_window": 3,
     "outlier_threshold": 0.3,

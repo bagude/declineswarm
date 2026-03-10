@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "description": "Baseline \u2014 global defaults",
+  "version": 3,
+  "description": "d_min 0.05->0.07: moderate increase since 0.08 had no effect, testing if slightly higher terminal decline improves forecast",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 3,
@@ -10,7 +10,7 @@
     "min_clean_months": 3
   },
   "fitting": {
-    "d_min": 0.05,
+    "d_min": 0.07,
     "di_initial": 0.5,
     "b_initial": 0.5,
     "qi_guess_strategy": "first",

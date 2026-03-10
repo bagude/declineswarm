@@ -1,0 +1,1 @@
+{"version":2,"param":"d_min","from":0.05,"to":0.08,"mape_before":0.0934,"mape_after":0.0934,"improved":false,"note":"d_min=0.08 no change in MAPE. Production tail flat at 18-19k bbl but model may not be sensitive at this fit_months=4 window."}

@@ -1,0 +1,2 @@
+{"version":2,"parameter":"d_min","from":0.05,"to":0.07,"result":"error","error":"curve_fit: Di < Dterm","note":"Well's fitted Di is below 7%/yr terminal decline — too aggressive for this conventional-behaving well"}
+{"version":"2b","parameter":"d_min","from":0.05,"to":0.06,"result":"error","error":"holdout_all_zeros","note":"Well shut in from 2020-09 onward (15+ months of zero production). Holdout period falls entirely in zero-production tail — hindcast MAPE cannot be computed. Optimization is impossible for this well without a different holdout strategy."}

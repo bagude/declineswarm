@@ -1,12 +1,12 @@
 {
-  "version": 4,
-  "description": "peak_merge_distance=8 — multiple rework events (1997,1999,2008,2013) create many short phases. Increasing merge distance to maximum to combine nearby production peaks into longer continuous phases for fitting.",
+  "version": 21,
+  "description": "peak_merge_distance=7 — distance 5,6 give 9 fit months; distance 8 gives 43. Testing 7 as the threshold.",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 3,
     "outlier_window": 3,
     "outlier_threshold": 0.3,
-    "peak_merge_distance": 8,
+    "peak_merge_distance": 7,
     "min_clean_months": 3
   },
   "fitting": {

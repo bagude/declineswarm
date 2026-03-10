@@ -3,5 +3,60 @@
     "version": 1,
     "mape": 0.2418,
     "r2_outsample": -22.7162
+  },
+  {
+    "version": 2,
+    "mape": 0.101,
+    "r2_outsample": -4.0406
+  },
+  {
+    "version": 3,
+    "mape": 0.101,
+    "r2_outsample": -4.0406
+  },
+  {
+    "version": 4,
+    "mape": 0.101,
+    "r2_outsample": -4.0406
+  },
+  {
+    "version": 5,
+    "mape": 0.1059,
+    "r2_outsample": -4.4441
+  },
+  {
+    "version": 6,
+    "mape": 0.085,
+    "r2_outsample": -2.8734
+  },
+  {
+    "version": 7,
+    "mape": 0.0861,
+    "r2_outsample": -2.9474
+  },
+  {
+    "version": 8,
+    "mape": 0.085,
+    "r2_outsample": -2.8734
+  },
+  {
+    "version": 9,
+    "mape": 0.0849,
+    "r2_outsample": -2.8733
+  },
+  {
+    "version": 10,
+    "mape": 0.0699,
+    "r2_outsample": -1.9554
+  },
+  {
+    "version": 11,
+    "mape": 0.0699,
+    "r2_outsample": -1.9554
+  },
+  {
+    "version": 12,
+    "mape": 0.0699,
+    "r2_outsample": -1.9554
   }
 ]

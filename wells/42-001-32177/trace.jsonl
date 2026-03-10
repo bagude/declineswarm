@@ -1,0 +1,8 @@
+{"version":1,"param":"baseline","value":"defaults","mape":0.3695,"r2_out":-4.4234,"note":"Baseline global defaults, d_min=0.05, terrible out-of-sample fit"}
+{"version":2,"param":"d_min","value":0.03,"mape":0.2683,"r2_out":-1.8093,"note":"d_min=0.03 — late-time production (2020-2025) flat ~100-250 bbl/mo with near-zero decline; lower d_min allows flatter terminal forecast. MAPE 0.3695→0.2683"}
+{"version":3,"param":"outlier_threshold","value":0.15,"mape":0.2719,"r2_out":-1.8879,"note":"outlier_threshold=0.15 — tried more aggressive outlier removal for shut-in/partial months but MAPE worsened 0.2683→0.2719. Rejection rate dropped to 4.8% suggesting fewer outliers removed, not more. REVERTED"}
+{"version":4,"param":"significance_threshold","value":0.40,"mape":0.2683,"r2_out":-1.8093,"note":"significance_threshold=0.40 — no change from 0.5, same MAPE. Phase detection unaffected at this level. REVERTED"}
+{"version":5,"param":"smoothing_window","value":5,"mape":0.2607,"r2_out":-1.6501,"note":"smoothing_window=5 — wider smoothing helps handle intermittent shut-ins and partial months. In-sample R2 improved to 0.8025. MAPE 0.2683→0.2607"}
+{"version":6,"param":"qi_guess_strategy","value":"max3","mape":0.2607,"r2_out":-1.6501,"note":"qi_guess_strategy=max3 — no change, optimizer converges to same qi=1082 regardless of initial guess. REVERTED"}
+{"version":7,"param":"outlier_window","value":5,"mape":0.2478,"r2_out":-1.3978,"note":"outlier_window=5 — wider outlier window catches more shut-in/partial months (rejection rate 6.1%→8.3%), reducing noise in fit data. MAPE 0.2607→0.2478"}
+{"version":8,"param":"outlier_window","value":7,"mape":0.2466,"r2_out":-1.3744,"note":"outlier_window=7 — further improvement, rejection 9.1%, marginal gain. MAPE 0.2478→0.2466"}

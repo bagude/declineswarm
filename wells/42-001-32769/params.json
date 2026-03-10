@@ -1,6 +1,6 @@
 {
-  "version": 13,
-  "description": "d_min=0.06 \u2014 d_min=0.10 was too steep, d_min=0.08 baseline. Try flatter terminal decline since holdout includes period where production partially rebounds before shut-in",
+  "version": 14,
+  "description": "d_min=0.04 \u2014 d_min=0.06 improved over 0.08, try even flatter to continue trend",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 5,
@@ -10,7 +10,7 @@
     "min_clean_months": 3
   },
   "fitting": {
-    "d_min": 0.06,
+    "d_min": 0.04,
     "di_initial": 0.5,
     "b_initial": 0.5,
     "qi_guess_strategy": "first",

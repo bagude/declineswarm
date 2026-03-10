@@ -1,12 +1,12 @@
 {
-  "version": 10,
-  "description": "significance_threshold=0.75 — filter out more insignificant production phases (low-volume restarts in 2016-17, 2019 spikes). Focus model on the primary decline trend from 1993-2015.",
+  "version": 12,
+  "description": "peak_merge_distance=6 — well has clustered restart episodes (2016-17 intermittent, 2019 spikes). Merging peaks within 6 months (vs 3) should unify fragmented phases into single decline segments.",
   "preprocessing": {
     "significance_threshold": 0.75,
     "smoothing_window": 3,
     "outlier_window": 3,
     "outlier_threshold": 0.15,
-    "peak_merge_distance": 3,
+    "peak_merge_distance": 6,
     "min_clean_months": 3
   },
   "fitting": {

@@ -1,8 +1,8 @@
 {
-  "version": 2,
-  "description": "di_initial=0.80 — initial decline 3935→1338 bbl in 2 months (~65%), default 0.5 too low for convergence",
+  "version": 4,
+  "description": "significance_threshold=0.70 — 1999 recompletion spike (18→1358 bbl) after near-zero needs to be segmented as separate phase from 1993-1998 primary decline",
   "preprocessing": {
-    "significance_threshold": 0.5,
+    "significance_threshold": 0.70,
     "smoothing_window": 3,
     "outlier_window": 3,
     "outlier_threshold": 0.3,

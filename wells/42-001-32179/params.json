@@ -1,11 +1,11 @@
 {
-  "version": 7,
-  "description": "di_initial=0.80 — rapid early decline in major phases (4700→1900 in 4mo) suggests higher initial decline rate",
+  "version": 10,
+  "description": "outlier_threshold=0.15 — extreme month-to-month spikes (470→28, 690→160) need aggressive outlier removal",
   "preprocessing": {
     "significance_threshold": 0.75,
     "smoothing_window": 3,
     "outlier_window": 3,
-    "outlier_threshold": 0.3,
+    "outlier_threshold": 0.15,
     "peak_merge_distance": 3,
     "min_clean_months": 3
   },

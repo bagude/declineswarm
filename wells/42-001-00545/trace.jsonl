@@ -1,0 +1,1 @@
+{"version":1,"parameter":"n/a","old_value":"n/a","new_value":"n/a","hindcast_mape":null,"improved":false,"description":"SKIP — production.csv contains 206 months of zero production (1993-01 to 2010-02). Evaluator returns 'Need at least 3 non-zero production months.' No decline curve can be fitted. This well should be excluded from the optimization swarm."}

@@ -1,0 +1,2 @@
+{"version":2,"param":"d_min","from":0.05,"to":0.08,"mape":0.3834,"improved":false,"note":"d_min=0.08 had no effect — fitted b=0.26 means instantaneous decline hasn't decayed to d_min floor within 29-month window."}
+{"version":3,"param":"b_initial","from":0.5,"to":1.0,"mape":0.3834,"improved":false,"note":"b_initial=1.0 converges to same b=0.26, qi=69717, di=0.7568 — optimizer finds strong minimum regardless of starting guess. Problem is likely segment selection, not fitting params."}

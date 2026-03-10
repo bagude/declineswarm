@@ -1,11 +1,11 @@
 {
-  "version": 1,
-  "description": "Baseline \u2014 global defaults",
+  "version": 9,
+  "description": "outlier_threshold=0.15 \u2014 more aggressive outlier removal to flag extreme spikes like Feb 2020 (5796 bbl from 290 prior month), current 10% rejection may miss key outliers distorting fit",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 3,
     "outlier_window": 3,
-    "outlier_threshold": 0.3,
+    "outlier_threshold": 0.15,
     "peak_merge_distance": 3,
     "min_clean_months": 3
   },

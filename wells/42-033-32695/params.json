@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "description": "Baseline \u2014 global defaults",
+  "version": 2,
+  "description": "d_min=0.08 \u2014 late-time oil (Aug-Nov 2025: 19.6K-20.3K) flattens around 20K bbl/month, terminal decline should be ~8% not 5%",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 3,
@@ -10,7 +10,7 @@
     "min_clean_months": 3
   },
   "fitting": {
-    "d_min": 0.05,
+    "d_min": 0.08,
     "di_initial": 0.5,
     "b_initial": 0.5,
     "qi_guess_strategy": "first",

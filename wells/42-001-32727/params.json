@@ -12,7 +12,7 @@
   "fitting": {
     "d_min": 0.05,
     "di_initial": 0.5,
-    "b_initial": 0.5,
+    "b_initial": 1.0,
     "qi_guess_strategy": "first",
     "qi_multiplier_upper": 5.0,
     "di_upper_bound": 5.0,

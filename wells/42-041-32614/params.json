@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "description": "Baseline \u2014 global defaults",
+  "version": 2,
+  "description": "qi_guess_strategy=peak_value — fitted qi=44216 overshoots actual peak of 38018 bbl; using peak_value to anchor qi guess closer to observed max, may improve holdout prediction (R2_oos=0.45)",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 3,
@@ -13,7 +13,7 @@
     "d_min": 0.05,
     "di_initial": 0.5,
     "b_initial": 0.5,
-    "qi_guess_strategy": "first",
+    "qi_guess_strategy": "peak_value",
     "qi_multiplier_upper": 5.0,
     "di_upper_bound": 5.0,
     "b_upper_bound": 2.0

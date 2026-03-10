@@ -1,0 +1,11 @@
+{"version":1,"param":"baseline","value":"defaults","mape":0.0752,"r2_outsample":-0.0699,"note":"Baseline — qi=3738, di=0.73, b=1.49 fitted. R²_insample=0.98 but R²_outsample=-0.07. Holdout dominated by noisy months (169, 390 bbl)."}
+{"version":2,"param":"d_min","value":0.08,"mape":0.0841,"r2_outsample":-0.1694,"note":"d_min=0.08 — too steep, forecast declines too fast vs flat late-life production. MAPE worsened 0.0752→0.0841."}
+{"version":3,"param":"d_min","value":0.03,"mape":0.0752,"r2_outsample":-0.0699,"note":"d_min=0.03 — identical to baseline. d_min not binding; fitted decline rate (~0.058 at month 128) stays above 0.03."}
+{"version":4,"param":"d_min","value":0.06,"mape":0.0752,"r2_outsample":-0.0702,"note":"d_min=0.06 — identical to baseline. Still not binding at the boundary."}
+{"version":5,"param":"qi_guess_strategy","value":"max3","mape":0.0752,"r2_outsample":-0.0699,"note":"qi_guess_strategy=max3 — optimizer converges to same solution regardless of initial qi guess."}
+{"version":6,"param":"b_initial","value":1.2,"mape":0.0752,"r2_outsample":-0.0699,"note":"b_initial=1.2 — closer to fitted b=1.49 but optimizer still finds identical minimum."}
+{"version":7,"param":"outlier_threshold","value":0.20,"mape":0.0752,"r2_outsample":-0.0699,"note":"outlier_threshold=0.20 — 0% rejection rate, no outliers detected despite visible anomalies (131, 137, 390 bbl months)."}
+{"version":8,"param":"outlier_window","value":5,"mape":0.0752,"r2_outsample":-0.0699,"note":"outlier_window=5 with threshold=0.20 — still 0% rejection. Outlier detection ineffective for this well's noise pattern."}
+{"version":9,"param":"smoothing_window","value":5,"mape":0.0752,"r2_outsample":-0.0699,"note":"smoothing_window=5 — no effect. The fit is robust to smoothing changes."}
+{"version":10,"param":"significance_threshold","value":0.35,"mape":0.0752,"r2_outsample":-0.0699,"note":"significance_threshold=0.35 — no phase break detected. Still fitting all 128 months."}
+{"version":11,"param":"significance_threshold","value":0.30,"mape":0.0752,"r2_outsample":-0.0699,"note":"significance_threshold=0.30 (minimum) — still no phase break detected. 10 consecutive iterations without improvement. STOPPING."}

@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "version": 1,
+    "mape": 0.0803,
+    "r2_outsample": 0.4518
+  },
+  {
+    "version": 2,
+    "mape": 0.0803,
+    "r2_outsample": 0.4518
+  },
+  {
+    "version": 2,
+    "mape": 0.0803,
+    "r2_outsample": 0.4518
+  },
+  {
+    "version": 2,
+    "mape": 0.0803,
+    "r2_outsample": 0.4518
+  }
+]

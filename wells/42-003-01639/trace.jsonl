@@ -1,0 +1,1 @@
+{"version":1,"action":"baseline evaluation","parameter":"n/a","old_value":"n/a","new_value":"n/a","result":"holdout_all_zeros","mape":null,"description":"Well 42-003-01639 cannot be hindcast-evaluated — last 12 months (2025-03 through 2026-02) are all zeros. Well appears shut-in/abandoned after 2025-02 (38 bbl). No MAPE can be computed. Optimization loop cannot proceed."}

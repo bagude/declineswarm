@@ -1,0 +1,1 @@
+{"version":2,"param":"di_initial","from":0.50,"to":0.30,"mape":0.7851,"r2_out":-0.0929,"note":"steep IP flush (2614→857 bbl in month 1) caused Di>=1.0 ValueError with default di_initial=0.50; lowering to 0.30 lets optimizer converge at Di=0.9859, b=0.88; MAPE 0.7851 is the first working baseline"}

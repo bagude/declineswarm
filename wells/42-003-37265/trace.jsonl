@@ -1,0 +1,2 @@
+{"version":2,"param":"di_initial","from":0.5,"to":0.8,"mape":2.2178,"note":"di_initial=0.80 — first successful convergence; steep initial decline 3935→1338 in 2mo needed higher starting guess. qi=19675 way too high (5x peak), b=1.60, r2_out=-0.90"}
+{"version":3,"param":"qi_multiplier_upper","from":5.0,"to":3.0,"mape":2.2238,"note":"qi_multiplier_upper=3.0 — no improvement (2.2178→2.2238), constraining qi didn't help; fitter still found similar shape. REVERTED"}

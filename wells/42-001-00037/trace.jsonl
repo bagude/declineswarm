@@ -1,0 +1,1 @@
+{"version": 1, "parameter": "baseline", "value": null, "result": "error", "hindcast_mape": null, "observation": "Well has only 1 non-zero production month (141 bbl, 2010-01). Engine requires minimum 3 non-zero months for decline detection. No DCA optimization possible with available data. Classified as stripper well."}

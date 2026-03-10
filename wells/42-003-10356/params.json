@@ -1,21 +1,21 @@
 {
-  "version": 1,
-  "description": "Baseline \u2014 global defaults",
+  "version": 2,
+  "description": "All-aggressive combo — d_min=0.03, di_initial=1.0, b_initial=1.2, max3, smoothing=6, outlier=0.15, peak_merge=8, sig=0.30 to test if well is fittable at all",
   "preprocessing": {
-    "significance_threshold": 0.5,
-    "smoothing_window": 3,
-    "outlier_window": 3,
-    "outlier_threshold": 0.3,
-    "peak_merge_distance": 3,
+    "significance_threshold": 0.30,
+    "smoothing_window": 6,
+    "outlier_window": 7,
+    "outlier_threshold": 0.15,
+    "peak_merge_distance": 8,
     "min_clean_months": 3
   },
   "fitting": {
-    "d_min": 0.05,
-    "di_initial": 0.5,
-    "b_initial": 0.5,
-    "qi_guess_strategy": "first",
-    "qi_multiplier_upper": 5.0,
-    "di_upper_bound": 5.0,
+    "d_min": 0.03,
+    "di_initial": 1.0,
+    "b_initial": 0.3,
+    "qi_guess_strategy": "max3",
+    "qi_multiplier_upper": 10.0,
+    "di_upper_bound": 2.0,
     "b_upper_bound": 2.0
   },
   "well_type": "shale"

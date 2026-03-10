@@ -1,0 +1,10 @@
+{"version":1,"param":"baseline","value":"defaults","hindcast_mape":4.0895,"improved":false,"note":"Baseline global defaults. MAPE=4.09, model over-predicts holdout (actual ~10 bbl/mo)."}
+{"version":2,"param":"d_min","value":0.03,"hindcast_mape":4.3072,"improved":false,"note":"d_min=0.03 — lowered to match flat tail, but MAPE worsened to 4.31. Model needs steeper decline, not flatter."}
+{"version":3,"param":"d_min","value":0.10,"hindcast_mape":1.4678,"improved":true,"note":"d_min=0.10 — steeper terminal decline brings predictions closer to actual 10 bbl/mo tail. MAPE improved 4.09→1.47."}
+{"version":4,"param":"qi_guess_strategy","value":"max3","hindcast_mape":1.4678,"improved":false,"note":"qi_guess_strategy=max3 — no change, optimizer converges to same solution regardless of initial qi guess."}
+{"version":5,"param":"di_initial","value":0.80,"hindcast_mape":1.4678,"improved":false,"note":"di_initial=0.80 — no change, optimizer converges to same solution regardless of initial di guess."}
+{"version":6,"param":"outlier_threshold","value":0.15,"hindcast_mape":1.454,"improved":true,"note":"outlier_threshold=0.15 — marginal improvement. MAPE 1.47→1.45. More aggressive outlier removal slightly helps."}
+{"version":7,"param":"smoothing_window","value":5,"hindcast_mape":1.454,"improved":false,"note":"smoothing_window=5 — no change from v6 baseline."}
+{"version":8,"param":"b_initial","value":1.0,"hindcast_mape":1.454,"improved":false,"note":"b_initial=1.0 — no change, optimizer converges regardless of b starting point."}
+{"version":9,"param":"significance_threshold","value":0.30,"hindcast_mape":1.5762,"improved":false,"note":"significance_threshold=0.30 — worse. Including more phases adds noise. MAPE 1.45→1.58."}
+{"version":10,"param":"significance_threshold","value":0.75,"hindcast_mape":0.5387,"improved":true,"note":"significance_threshold=0.75 — big improvement! Filtering more insignificant phases (low-vol restarts) lets model focus on primary decline. MAPE 1.45→0.54."}

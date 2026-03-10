@@ -1,0 +1,1 @@
+{"version":2,"change":"d_min=0.03","result":"holdout_all_zeros","observation":"Well 42-003-01878 has been dead since mid-2022 (~18 months of zeros at tail). Holdout window is entirely zero production, so hindcast MAPE cannot be computed. This well is not optimizable via the hindcast loop — it needs a different evaluation strategy or should be skipped."}

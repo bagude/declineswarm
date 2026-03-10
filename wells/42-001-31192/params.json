@@ -1,6 +1,6 @@
 {
-  "version": 10,
-  "description": "significance_threshold=0.40 — well has complex multi-phase history (initial, workover, slow decline). Lower threshold may detect subtle regime changes and improve phase segmentation.",
+  "version": 13,
+  "description": "qi_multiplier_upper=8.0 — post-workover peak 1476 bbl/mo is ~4x the stabilized rate. Higher multiplier gives optimizer more room to fit the high initial peak and resulting long decline.",
   "preprocessing": {
     "significance_threshold": 0.40,
     "smoothing_window": 5,
@@ -14,7 +14,7 @@
     "di_initial": 0.30,
     "b_initial": 0.5,
     "qi_guess_strategy": "first",
-    "qi_multiplier_upper": 5.0,
+    "qi_multiplier_upper": 8.0,
     "di_upper_bound": 5.0,
     "b_upper_bound": 2.0
   },

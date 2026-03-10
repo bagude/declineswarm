@@ -1,0 +1,2 @@
+{"version":1,"parameter":"baseline","value":"defaults","hindcast_mape":0.1936,"r2_outsample":0.4757,"fit_months":4,"note":"Baseline with global defaults. fit_months=4 is very low — model likely anchoring on restim peak Oct 2024 with insufficient decline data."}
+{"version":2,"parameter":"d_min","value":0.08,"hindcast_mape":0.1936,"r2_outsample":0.4757,"fit_months":4,"note":"d_min=0.08 — no change in MAPE, d_min not binding with only 4 fit months. Need to address peak selection/fit window first."}

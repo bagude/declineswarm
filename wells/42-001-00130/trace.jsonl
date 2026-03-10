@@ -1,0 +1,1 @@
+{"version": 1, "parameter": "none", "old_value": null, "new_value": null, "hindcast_mape": null, "improved": false, "observation": "Well 42-001-00130 has zero production across all 395 months (1993-01 to 2025-09). Evaluator returns error: 'Need at least 3 non-zero production months.' No decline curve fitting or parameter optimization is possible. Stopping optimization loop."}

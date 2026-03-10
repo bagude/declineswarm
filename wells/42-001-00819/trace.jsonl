@@ -1,0 +1,1 @@
+{"version":1,"param":"baseline","result":"error:holdout_all_zeros","note":"Well shut in after 2008-11. CSV contains ~84 months but last 40+ are zeros. The 12-month holdout window falls entirely in the zero-production period, so hindcast MAPE cannot be computed. No parameter optimization is possible with the current hindcast evaluator for this well."}

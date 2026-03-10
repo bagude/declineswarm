@@ -1,0 +1,2 @@
+{"version":2,"parameter":"d_min","from":0.05,"to":0.08,"hindcast_mape":0.2298,"improved":false,"note":"d_min=0.08 — no effect because b=0.001 (pure exponential fit), decline rate never drops to d_min threshold. Need to fix b first."}
+{"version":3,"parameter":"b_initial","from":0.5,"to":1.0,"hindcast_mape":0.2298,"improved":false,"note":"b_initial=1.0 — optimizer still converges to b=0.001 (exponential). Only 4 fit months used, optimizer strongly prefers exponential with short fitting window."}
