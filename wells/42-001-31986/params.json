@@ -1,8 +1,8 @@
 {
-  "version": 6,
-  "description": "outlier_threshold=0.15 — well has many shut-in months (0 bbl) and irregular restarts creating noisy data. More aggressive outlier removal (0.30→0.15) should clean up spurious production spikes and zeros for cleaner decline fitting.",
+  "version": 10,
+  "description": "significance_threshold=0.75 — filter out more insignificant production phases (low-volume restarts in 2016-17, 2019 spikes). Focus model on the primary decline trend from 1993-2015.",
   "preprocessing": {
-    "significance_threshold": 0.5,
+    "significance_threshold": 0.75,
     "smoothing_window": 3,
     "outlier_window": 3,
     "outlier_threshold": 0.15,
