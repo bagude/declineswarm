@@ -1,6 +1,6 @@
 {
-  "version": 6,
-  "description": "smoothing_window=5 — production has high month-to-month variance (e.g. 2019: 87-225 bbl/mo range). Wider smoothing should reduce noise for optimizer, improving late-time trend capture.",
+  "version": 9,
+  "description": "di_initial=0.30 — post-workover decline from 1200 to 600 bbl/mo over 4 years is ~15-18%/yr, not 50%. Lower di_initial closer to actual early decline rate may help optimizer.",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 5,
@@ -11,7 +11,7 @@
   },
   "fitting": {
     "d_min": 0.03,
-    "di_initial": 0.5,
+    "di_initial": 0.30,
     "b_initial": 0.5,
     "qi_guess_strategy": "first",
     "qi_multiplier_upper": 5.0,
