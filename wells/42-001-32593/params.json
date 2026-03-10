@@ -1,8 +1,8 @@
 {
-  "version": 3,
-  "description": "significance_threshold=0.35 \u2014 detect 2013 workover (509->173->877 bbl/mo) as phase break for independent phase fitting",
+  "version": 4,
+  "description": "significance_threshold=0.30 \u2014 more aggressive phase detection to isolate late-2018 production collapse (484->0->317 bbl/mo)",
   "preprocessing": {
-    "significance_threshold": 0.35,
+    "significance_threshold": 0.30,
     "smoothing_window": 3,
     "outlier_window": 3,
     "outlier_threshold": 0.3,
