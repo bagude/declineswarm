@@ -1,8 +1,8 @@
 {
-  "version": 1,
-  "description": "Baseline \u2014 global defaults",
+  "version": 3,
+  "description": "significance_threshold=0.35 \u2014 detect 2013 workover (509->173->877 bbl/mo) as phase break for independent phase fitting",
   "preprocessing": {
-    "significance_threshold": 0.5,
+    "significance_threshold": 0.35,
     "smoothing_window": 3,
     "outlier_window": 3,
     "outlier_threshold": 0.3,
