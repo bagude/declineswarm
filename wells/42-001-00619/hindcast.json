@@ -3,5 +3,10 @@
     "version": 1,
     "mape": 0.3114,
     "r2_outsample": -0.1362
+  },
+  {
+    "version": 7,
+    "mape": 0.3069,
+    "r2_outsample": -0.154
   }
 ]

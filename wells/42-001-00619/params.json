@@ -1,11 +1,11 @@
 {
-  "version": 1,
-  "description": "Baseline \u2014 global defaults",
+  "version": 7,
+  "description": "outlier_threshold=0.15 — well has extreme noise with zero months, workover spikes (332 bbl Sep 2004, 166 bbl Aug 2024), and erratic production; current 8.2% rejection rate is too low for this data quality; more aggressive outlier removal should give fitter cleaner decline signal",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 3,
     "outlier_window": 3,
-    "outlier_threshold": 0.3,
+    "outlier_threshold": 0.15,
     "peak_merge_distance": 3,
     "min_clean_months": 3
   },
