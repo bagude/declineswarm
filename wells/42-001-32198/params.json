@@ -1,11 +1,11 @@
 {
-  "version": 1,
-  "description": "Baseline \u2014 global defaults",
+  "version": 2,
+  "description": "outlier_threshold=0.15 — aggressive outlier removal for erratic 2020+ data with frequent zeros and wild swings (0, 50, 323 bbl in consecutive months)",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 3,
     "outlier_window": 3,
-    "outlier_threshold": 0.3,
+    "outlier_threshold": 0.15,
     "peak_merge_distance": 3,
     "min_clean_months": 3
   },
