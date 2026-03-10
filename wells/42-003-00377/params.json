@@ -1,9 +1,9 @@
 {
-  "version": 6,
-  "description": "outlier_window=5 \u2014 well has sharp dips (1994-11: 180, 2001-12: 1, 2013-12: 78, 2022-04: 8) that need wider context window to flag as outliers",
+  "version": 8,
+  "description": "smoothing_window=5 \u2014 high month-to-month variance (e.g. 2008: 162-412, 2015: 69-372) suggests wider smoothing to track underlying decline trend",
   "preprocessing": {
     "significance_threshold": 0.5,
-    "smoothing_window": 3,
+    "smoothing_window": 5,
     "outlier_window": 5,
     "outlier_threshold": 0.3,
     "peak_merge_distance": 3,
