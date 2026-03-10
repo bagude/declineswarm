@@ -18,5 +18,15 @@
     "version": 4,
     "mape": 4.7456,
     "r2_outsample": -236.4091
+  },
+  {
+    "version": 5,
+    "mape": 4.7456,
+    "r2_outsample": -236.4091
+  },
+  {
+    "version": 6,
+    "mape": 2.7901,
+    "r2_outsample": -79.7254
   }
 ]

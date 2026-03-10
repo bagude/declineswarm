@@ -1,8 +1,8 @@
 {
-  "version": 4,
-  "description": "d_min=0.10 — steep intra-phase declines (470→28 bbl/mo in 2021) suggest even higher terminal decline",
+  "version": 6,
+  "description": "significance_threshold=0.75 — filter insignificant phases, focus on dominant production cycle",
   "preprocessing": {
-    "significance_threshold": 0.5,
+    "significance_threshold": 0.75,
     "smoothing_window": 3,
     "outlier_window": 3,
     "outlier_threshold": 0.3,
