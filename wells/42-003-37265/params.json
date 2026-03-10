@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "description": "Baseline \u2014 global defaults",
+  "version": 2,
+  "description": "di_initial=0.80 — initial decline 3935→1338 bbl in 2 months (~65%), default 0.5 too low for convergence",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 3,
@@ -11,7 +11,7 @@
   },
   "fitting": {
     "d_min": 0.05,
-    "di_initial": 0.5,
+    "di_initial": 0.80,
     "b_initial": 0.5,
     "qi_guess_strategy": "first",
     "qi_multiplier_upper": 5.0,
