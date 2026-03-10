@@ -1,6 +1,6 @@
 {
-  "version": 10,
-  "description": "smoothing_window=5 \u2014 dampen 2020 curtailment noise and monthly volatility, this well has significant scatter (e.g., Jan 2020 dip to 281, then recovery to 461)",
+  "version": 13,
+  "description": "d_min=0.06 \u2014 d_min=0.10 was too steep, d_min=0.08 baseline. Try flatter terminal decline since holdout includes period where production partially rebounds before shut-in",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 5,
@@ -10,7 +10,7 @@
     "min_clean_months": 3
   },
   "fitting": {
-    "d_min": 0.08,
+    "d_min": 0.06,
     "di_initial": 0.5,
     "b_initial": 0.5,
     "qi_guess_strategy": "first",
