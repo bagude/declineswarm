@@ -1,0 +1,3 @@
+{"version":2,"param":"d_min","from":0.05,"to":0.08,"mape":0.0772,"r2_outsample":0.5994,"improved":false,"note":"d_min=0.08 — no effect, fitted Di=0.7751 is well above floor; d_min not the binding constraint for this well"}
+{"version":3,"param":"qi_guess_strategy","from":"first","to":"peak_value","mape":0.0772,"r2_outsample":0.5994,"improved":false,"note":"qi_guess_strategy=peak_value — no change, optimizer converges to same qi=57812/di=0.7751/b=1.3745 regardless of initial qi guess"}
+{"version":4,"param":"smoothing_window","from":3,"to":5,"mape":0.1661,"r2_outsample":-0.2958,"improved":false,"note":"smoothing_window=5 — much worse, over-smoothing loses important decline structure; fit_months dropped to 21 and holdout MAPE doubled"}

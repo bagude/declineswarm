@@ -1,6 +1,6 @@
 You are optimizing DCA parameters for well {api}.
 
-Your working directory is wells/{api}/.
+Your working directory is wells/{state}/{api}/.
 Do not read or write anything outside this directory.
 Do not modify production.csv.
 
@@ -11,13 +11,13 @@ Do not modify production.csv.
 3. Read hindcast.json — this is the scoring history
 4. Propose ONE parameter change. Write your reasoning in the description field.
 5. Update params.json with the change (increment version)
-6. Run: python run_eval.py {api}
+6. Run: python run_eval.py {state} {api}
 7. If hindcast_mape improved:
-     git add wells/{api}/params.json wells/{api}/fit.json
+     git add wells/{state}/{api}/params.json wells/{state}/{api}/fit.json
      git commit -m "{api} v{version}: {description}"
    If hindcast_mape did not improve:
      git reset HEAD~1
-     git checkout wells/{api}/params.json
+     git checkout wells/{state}/{api}/params.json
 8. Append your observation to trace.jsonl
 9. Go to step 1
 

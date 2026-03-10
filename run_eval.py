@@ -1,9 +1,9 @@
 """Hindcast evaluator for one well atom.
 
 Usage:
-    python run_eval.py <api_number>
+    python run_eval.py <state> <api_number>
 
-Reads wells/{api}/params.json and production.csv.
+Reads wells/{state}/{api}/params.json and production.csv.
 Fits decline on months 1..N-12, forecasts months N-11..N,
 computes MAPE between forecast and actual.
 Outputs JSON to stdout.
@@ -19,9 +19,9 @@ from arps import create_model, generate_forecast
 from evaluation import fit_and_score
 
 
-def hindcast(api: str) -> dict:
+def hindcast(state: str, api: str) -> dict:
     """Run hindcast evaluation for one well."""
-    well_dir = Path("wells") / api
+    well_dir = Path("wells") / state / api
     production_csv = well_dir / "production.csv"
     params_file = well_dir / "params.json"
 
@@ -163,16 +163,17 @@ def hindcast(api: str) -> dict:
 
 
 def main():
-    if len(sys.argv) < 2:
-        print(json.dumps({"error": "Usage: python run_eval.py <api_number>"}))
+    if len(sys.argv) < 3:
+        print(json.dumps({"error": "Usage: python run_eval.py <state> <api_number>"}))
         sys.exit(1)
 
-    api = sys.argv[1]
-    result = hindcast(api)
+    state = sys.argv[1]
+    api = sys.argv[2]
+    result = hindcast(state, api)
     print(json.dumps(result, indent=2))
 
     # Write fit.json and update hindcast.json
-    well_dir = Path("wells") / api
+    well_dir = Path("wells") / state / api
     if "error" not in result:
         params = json.loads((well_dir / "params.json").read_text())
         full_fit = fit_and_score(well_dir / "production.csv", params)

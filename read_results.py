@@ -1,11 +1,14 @@
 """Read swarm results — portfolio-level summary of what the swarm discovered.
 
 Usage:
-    python read_results.py
+    python read_results.py           # all states
+    python read_results.py TX        # one state
+    python read_results.py NM
 """
 
 import json
 import statistics
+import sys
 from pathlib import Path
 
 
@@ -13,37 +16,45 @@ def main():
     results = []
     errors = []
 
-    for well_dir in sorted(Path("wells").iterdir()):
-        if not well_dir.is_dir():
-            continue
+    wells_root = Path("wells")
+    if len(sys.argv) > 1:
+        state_dirs = [wells_root / sys.argv[1]]
+    else:
+        state_dirs = sorted(p for p in wells_root.iterdir() if p.is_dir())
 
-        fit_file = well_dir / "fit.json"
-        params_file = well_dir / "params.json"
+    for state_dir in state_dirs:
+        state = state_dir.name
+        for well_dir in sorted(state_dir.iterdir()):
+            if not well_dir.is_dir():
+                continue
 
-        if not params_file.exists():
-            continue
+            fit_file = well_dir / "fit.json"
+            params_file = well_dir / "params.json"
 
-        params = json.loads(params_file.read_text())
-        api = well_dir.name
-        well_type = params.get("well_type", "unknown")
+            if not params_file.exists():
+                continue
 
-        if not fit_file.exists():
-            errors.append(f"{api} ({well_type}): no fit.json")
-            continue
+            params = json.loads(params_file.read_text())
+            api = well_dir.name
+            well_type = params.get("well_type", params.get("state", "unknown"))
 
-        fit = json.loads(fit_file.read_text())
-        results.append({
-            "api": api,
-            "well_type": well_type,
-            "param_version": params.get("version", 1),
-            "hindcast_mape": fit.get("hindcast_mape"),
-            "r2_insample": fit.get("r2_insample"),
-            "d_min": params["fitting"]["d_min"],
-            "di": fit.get("di"),
-            "b": fit.get("b"),
-            "model": fit.get("model"),
-            "convergence": fit.get("convergence"),
-        })
+            if not fit_file.exists():
+                errors.append(f"{state}/{api} ({well_type}): no fit.json")
+                continue
+
+            fit = json.loads(fit_file.read_text())
+            results.append({
+                "api": f"{state}/{api}",
+                "well_type": well_type,
+                "param_version": params.get("version", 1),
+                "hindcast_mape": fit.get("hindcast_mape"),
+                "r2_insample": fit.get("r2_insample"),
+                "d_min": params["fitting"]["d_min"],
+                "di": fit.get("di"),
+                "b": fit.get("b"),
+                "model": fit.get("model"),
+                "convergence": fit.get("convergence"),
+            })
 
     if not results:
         print("No results found. Run the swarm first (python run_swarm.py).")
