@@ -1,8 +1,8 @@
 {
-  "version": 7,
-  "description": "outlier_threshold=0.15 — well has extreme noise with zero months, workover spikes (332 bbl Sep 2004, 166 bbl Aug 2024), and erratic production; current 8.2% rejection rate is too low for this data quality; more aggressive outlier removal should give fitter cleaner decline signal",
+  "version": 10,
+  "description": "significance_threshold=0.40 — lowering from 0.50 to be more selective about which production segments are significant; the well has many near-zero sporadic months (1-3 bbl) that likely add noise to the decline fit without representing real decline behavior",
   "preprocessing": {
-    "significance_threshold": 0.5,
+    "significance_threshold": 0.40,
     "smoothing_window": 3,
     "outlier_window": 3,
     "outlier_threshold": 0.15,

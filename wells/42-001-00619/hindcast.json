@@ -8,5 +8,10 @@
     "version": 7,
     "mape": 0.3069,
     "r2_outsample": -0.154
+  },
+  {
+    "version": 10,
+    "mape": 0.282,
+    "r2_outsample": -0.2718
   }
 ]
