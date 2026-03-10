@@ -1,9 +1,9 @@
 {
-  "version": 5,
-  "description": "significance_threshold=0.30 — push further; 0.40 gave big improvement, test if finer phase separation isolates cleanest production period even better",
+  "version": 8,
+  "description": "smoothing_window=5 — production has high month-to-month noise (2014: 272,594,378,746,796,1075,201 bbl), wider smoothing should give cleaner trend for fitting",
   "preprocessing": {
     "significance_threshold": 0.30,
-    "smoothing_window": 3,
+    "smoothing_window": 5,
     "outlier_window": 3,
     "outlier_threshold": 0.15,
     "peak_merge_distance": 3,
