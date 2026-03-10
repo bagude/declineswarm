@@ -1,9 +1,9 @@
 {
-  "version": 2,
-  "description": "d_min=0.03 \u2014 late-time production (2020-2025) is flat ~100-250 bbl/mo with near-zero decline; lower d_min to allow flatter terminal forecast",
+  "version": 5,
+  "description": "smoothing_window=5 \u2014 well has highly intermittent production with frequent shut-ins and partial months; wider smoothing window to reduce noise impact on curve fit",
   "preprocessing": {
     "significance_threshold": 0.5,
-    "smoothing_window": 3,
+    "smoothing_window": 5,
     "outlier_window": 3,
     "outlier_threshold": 0.3,
     "peak_merge_distance": 3,
