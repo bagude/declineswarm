@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "description": "Baseline \u2014 global defaults",
+  "version": 2,
+  "description": "d_min=0.03 \u2014 late-time production (2022-2025) is flat at 400-950 bbl/month with no clear decline, needs minimum terminal decline rate",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 3,
@@ -10,7 +10,7 @@
     "min_clean_months": 3
   },
   "fitting": {
-    "d_min": 0.05,
+    "d_min": 0.03,
     "di_initial": 0.5,
     "b_initial": 0.5,
     "qi_guess_strategy": "first",
