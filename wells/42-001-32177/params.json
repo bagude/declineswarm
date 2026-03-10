@@ -1,10 +1,10 @@
 {
-  "version": 5,
-  "description": "smoothing_window=5 \u2014 well has highly intermittent production with frequent shut-ins and partial months; wider smoothing window to reduce noise impact on curve fit",
+  "version": 7,
+  "description": "outlier_window=5 \u2014 wider outlier detection window to better identify shut-in months (0 bbl) and partial months (3-15 bbl) surrounded by normal production",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 5,
-    "outlier_window": 3,
+    "outlier_window": 5,
     "outlier_threshold": 0.3,
     "peak_merge_distance": 3,
     "min_clean_months": 3
