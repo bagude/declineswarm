@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "description": "Baseline \u2014 global defaults",
+  "version": 2,
+  "description": "d_min=0.03 — late-time production (2018-2025) is nearly flat at 165-185 bbl/mo, implying ~1.3%/yr actual decline. Current d_min=0.05 forces 5% terminal decline, overshooting late-time forecast.",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 3,
@@ -10,7 +10,7 @@
     "min_clean_months": 3
   },
   "fitting": {
-    "d_min": 0.05,
+    "d_min": 0.03,
     "di_initial": 0.5,
     "b_initial": 0.5,
     "qi_guess_strategy": "first",
