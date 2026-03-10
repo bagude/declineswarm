@@ -1,10 +1,10 @@
 {
-  "version": 7,
-  "description": "outlier_window=5 \u2014 wider outlier detection window to better identify shut-in months (0 bbl) and partial months (3-15 bbl) surrounded by normal production",
+  "version": 8,
+  "description": "outlier_window=7 \u2014 outlier_window=5 improved rejection rate and MAPE; try 7 to capture even more intermittent shut-in clusters",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 5,
-    "outlier_window": 5,
+    "outlier_window": 7,
     "outlier_threshold": 0.3,
     "peak_merge_distance": 3,
     "min_clean_months": 3
