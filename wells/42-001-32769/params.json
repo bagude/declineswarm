@@ -1,9 +1,9 @@
 {
-  "version": 2,
-  "description": "d_min=0.08 \u2014 late-time tail (months 60+) declines from ~275 to ~210 over 2 years, much flatter than exponential, consistent with terminal decline ~8%",
+  "version": 10,
+  "description": "smoothing_window=5 \u2014 dampen 2020 curtailment noise and monthly volatility, this well has significant scatter (e.g., Jan 2020 dip to 281, then recovery to 461)",
   "preprocessing": {
     "significance_threshold": 0.5,
-    "smoothing_window": 3,
+    "smoothing_window": 5,
     "outlier_window": 3,
     "outlier_threshold": 0.3,
     "peak_merge_distance": 3,
