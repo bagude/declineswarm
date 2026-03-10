@@ -1,8 +1,8 @@
 {
-  "version": 4,
-  "description": "significance_threshold=0.40 — lower threshold keeps more phases separate; well has distinct 1995-1998, 2010-2019, 2020+ phases that need isolation",
+  "version": 5,
+  "description": "significance_threshold=0.30 — push further; 0.40 gave big improvement, test if finer phase separation isolates cleanest production period even better",
   "preprocessing": {
-    "significance_threshold": 0.40,
+    "significance_threshold": 0.30,
     "smoothing_window": 3,
     "outlier_window": 3,
     "outlier_threshold": 0.15,
