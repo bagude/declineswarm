@@ -13,5 +13,10 @@
     "version": 2,
     "mape": 1.6625,
     "r2_outsample": 0.026
+  },
+  {
+    "version": 4,
+    "mape": 1.0555,
+    "r2_outsample": -0.0808
   }
 ]

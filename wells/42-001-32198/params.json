@@ -1,8 +1,8 @@
 {
-  "version": 2,
-  "description": "outlier_threshold=0.15 — aggressive outlier removal for erratic 2020+ data with frequent zeros and wild swings (0, 50, 323 bbl in consecutive months)",
+  "version": 4,
+  "description": "significance_threshold=0.40 — lower threshold keeps more phases separate; well has distinct 1995-1998, 2010-2019, 2020+ phases that need isolation",
   "preprocessing": {
-    "significance_threshold": 0.5,
+    "significance_threshold": 0.40,
     "smoothing_window": 3,
     "outlier_window": 3,
     "outlier_threshold": 0.15,
