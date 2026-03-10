@@ -1,6 +1,6 @@
 {
-  "version": 3,
-  "description": "d_min 0.05->0.03 — v2 showed higher d_min worsens fit. Flat 2018-2025 oil (300-700 bbl/mo, ~7yr no decline) needs lower d_min to allow near-zero terminal decline rate",
+  "version": 8,
+  "description": "qi_multiplier_upper 5.0->3.0 — model found qi=23300 anchored to 1993 gas peak. Tighter qi bound may force optimizer away from gas-dominated fit toward oil-phase solution",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 3,
@@ -14,7 +14,7 @@
     "di_initial": 0.5,
     "b_initial": 0.5,
     "qi_guess_strategy": "first",
-    "qi_multiplier_upper": 5.0,
+    "qi_multiplier_upper": 3.0,
     "di_upper_bound": 5.0,
     "b_upper_bound": 2.0
   },
