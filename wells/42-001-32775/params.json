@@ -1,11 +1,11 @@
 {
-  "version": 1,
-  "description": "Baseline \u2014 global defaults",
+  "version": 3,
+  "description": "outlier_threshold=0.20 \u2014 sharp dips at Jun 2022 (42 bbl), Apr-May 2023 (51/72 bbl), Jun-Jul 2024 (105/94 bbl) are operational anomalies skewing the fit; tighter threshold should flag them (current rejection only 1.18%)",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 3,
     "outlier_window": 3,
-    "outlier_threshold": 0.3,
+    "outlier_threshold": 0.20,
     "peak_merge_distance": 3,
     "min_clean_months": 3
   },
