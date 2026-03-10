@@ -1,10 +1,10 @@
 {
-  "version": 2,
-  "description": "d_min=0.03 \u2014 late-time production 2020-2025 averages ~185 bbl/mo with near-zero decline, terminal rate well below 5%",
+  "version": 6,
+  "description": "outlier_window=5 \u2014 well has sharp dips (1994-11: 180, 2001-12: 1, 2013-12: 78, 2022-04: 8) that need wider context window to flag as outliers",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 3,
-    "outlier_window": 3,
+    "outlier_window": 5,
     "outlier_threshold": 0.3,
     "peak_merge_distance": 3,
     "min_clean_months": 3
