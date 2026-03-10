@@ -1,8 +1,8 @@
 {
-  "version": 1,
-  "description": "Baseline \u2014 global defaults",
+  "version": 2,
+  "description": "significance_threshold=0.70, d_min=0.03 \u2014 threshold anchors decline at 2007-2008 peak instead of late-2025 spike (960 bbl) which leaves only zeros; d_min lowered because this conventional well declines <5%/yr (2017-2024: ~700 to ~430 bbl over 7 years)",
   "preprocessing": {
-    "significance_threshold": 0.5,
+    "significance_threshold": 0.70,
     "smoothing_window": 3,
     "outlier_window": 3,
     "outlier_threshold": 0.3,
@@ -10,7 +10,7 @@
     "min_clean_months": 3
   },
   "fitting": {
-    "d_min": 0.05,
+    "d_min": 0.03,
     "di_initial": 0.5,
     "b_initial": 0.5,
     "qi_guess_strategy": "first",
