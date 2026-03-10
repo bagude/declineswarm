@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "description": "Baseline \u2014 global defaults",
+  "version": 2,
+  "description": "di_initial=0.30 \u2014 steep IP flush (2614\u2192857 in month 1) pushes optimizer to Di\u22651.0 with default di_initial=0.50; lowering starting guess keeps Di=0.9859 just under petbox-dca ceiling",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 3,
@@ -11,7 +11,7 @@
   },
   "fitting": {
     "d_min": 0.05,
-    "di_initial": 0.5,
+    "di_initial": 0.30,
     "b_initial": 0.5,
     "qi_guess_strategy": "first",
     "qi_multiplier_upper": 5.0,
