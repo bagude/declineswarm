@@ -1,12 +1,12 @@
 {
-  "version": 1,
-  "description": "Baseline \u2014 global defaults",
+  "version": 4,
+  "description": "peak_merge_distance=8 — multiple rework events (1997,1999,2008,2013) create many short phases. Increasing merge distance to maximum to combine nearby production peaks into longer continuous phases for fitting.",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 3,
     "outlier_window": 3,
     "outlier_threshold": 0.3,
-    "peak_merge_distance": 3,
+    "peak_merge_distance": 8,
     "min_clean_months": 3
   },
   "fitting": {

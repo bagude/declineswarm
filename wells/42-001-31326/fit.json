@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-03-10T22:03:46.859119+00:00",
+  "param_version": 4,
+  "model": "hyperbolic",
+  "qi": 1146.32,
+  "di": 0.7007,
+  "b": 2.0,
+  "d_min": 0.05,
+  "r2_insample": 0.715,
+  "hindcast_mape": 0.3427,
+  "convergence": true
+}
