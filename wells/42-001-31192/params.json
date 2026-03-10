@@ -1,8 +1,8 @@
 {
-  "version": 9,
-  "description": "di_initial=0.30 — post-workover decline from 1200 to 600 bbl/mo over 4 years is ~15-18%/yr, not 50%. Lower di_initial closer to actual early decline rate may help optimizer.",
+  "version": 10,
+  "description": "significance_threshold=0.40 — well has complex multi-phase history (initial, workover, slow decline). Lower threshold may detect subtle regime changes and improve phase segmentation.",
   "preprocessing": {
-    "significance_threshold": 0.5,
+    "significance_threshold": 0.40,
     "smoothing_window": 5,
     "outlier_window": 3,
     "outlier_threshold": 0.3,
