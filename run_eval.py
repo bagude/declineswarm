@@ -155,6 +155,30 @@ def main():
             "r2_outsample": result["r2_outsample"],
         })
         hindcast_file.write_text(json.dumps(history, indent=2))
+
+        # Append to trace.jsonl
+        trace_file = well_dir / "trace.jsonl"
+        prev_mape = history[-2]["mape"] if len(history) >= 2 else None
+        cur_mape = result["hindcast_mape"]
+        improved = prev_mape is not None and cur_mape < prev_mape
+        trace_entry = {
+            "version": params.get("version", 1),
+            "timestamp": fit_data["timestamp"],
+            "description": params.get("description", ""),
+            "mape": cur_mape,
+            "r2_outsample": result["r2_outsample"],
+            "r2_insample": result["r2_insample"],
+            "qi": fit_data["qi"],
+            "di": fit_data["di"],
+            "b": fit_data["b"],
+            "d_min": fit_data["d_min"],
+            "convergence": fit_data["convergence"],
+        }
+        if prev_mape is not None:
+            trace_entry["mape_prev"] = prev_mape
+            trace_entry["improved"] = improved
+        with open(trace_file, "a", encoding="utf-8") as tf:
+            tf.write(json.dumps(trace_entry) + "\n")
     else:
         result.pop("_full_fit", None)
 

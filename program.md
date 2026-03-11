@@ -4,25 +4,30 @@ Your working directory is wells/{state}/{api}/.
 Do not read or write anything outside this directory.
 Do not modify production.csv.
 
+## First step
+
+1. Read production.csv to understand the well's production profile
+2. Read params.json — these are the starting parameters (version 1)
+3. Run: python run_eval.py {state} {api}
+   This evaluates the baseline and creates the first trace entry.
+   Note the starting MAPE — this is what you're trying to beat.
+
 ## Your loop
 
-1. Read params.json — these are the current parameters
-2. Read trace.jsonl — this is what has been tried before and what was learned
-3. Read hindcast.json — this is the scoring history
-4. Propose ONE parameter change. Write your reasoning in the description field.
-5. Update params.json with the change (increment version)
-6. Run: python run_eval.py {state} {api}
-7. Append your observation to trace.jsonl — this MUST happen after EVERY experiment,
-   whether it improved or not. Include these fields:
-     {"version": N, "parameter": "...", "from": old_val, "to": new_val,
-      "mape_before": ..., "mape_after": ..., "kept": true/false,
-      "improved": true/false, "note": "your reasoning..."}
-8. If hindcast_mape improved (kept: true):
-     git add wells/{state}/{api}/params.json wells/{state}/{api}/fit.json wells/{state}/{api}/trace.jsonl
-     git commit -m "{api} v{version}: {description}"
-   If hindcast_mape did not improve (kept: false):
-     git checkout wells/{state}/{api}/params.json
-9. Go to step 1
+1. Read trace.jsonl to see what has been tried and learned so far
+2. Propose ONE parameter change. Update params.json:
+   - Increment version
+   - Write your reasoning in the description field
+3. Run: python run_eval.py {state} {api}
+   (This automatically logs the result to trace.jsonl and hindcast.json)
+4. Check the output:
+   - If hindcast_mape IMPROVED: keep it — run:
+       git add wells/{state}/{api}/params.json wells/{state}/{api}/fit.json wells/{state}/{api}/trace.jsonl wells/{state}/{api}/hindcast.json
+       git commit -m "{api} v{version}: {description}"
+   - If hindcast_mape DID NOT improve: revert params.json ONLY — run:
+       git checkout -- wells/{state}/{api}/params.json
+     Do NOT revert trace.jsonl, hindcast.json, or fit.json.
+5. Go to step 1
 
 ## Rules
 

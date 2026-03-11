@@ -8,14 +8,64 @@ Usage:
 """
 
 import argparse
+import json
 import os
 import subprocess
 import concurrent.futures
 from pathlib import Path
 
+BASELINE_PARAMS = {
+    "version": 1,
+    "description": "Baseline — global defaults",
+    "preprocessing": {
+        "significance_threshold": 0.50,
+        "smoothing_window": 3,
+        "outlier_window": 3,
+        "outlier_threshold": 0.30,
+        "peak_merge_distance": 3,
+        "min_clean_months": 3,
+    },
+    "fitting": {
+        "d_min": 0.05,
+        "di_initial": 0.50,
+        "b_initial": 0.50,
+        "qi_guess_strategy": "first",
+        "qi_multiplier_upper": 5.0,
+        "di_upper_bound": 5.0,
+        "b_upper_bound": 2.0,
+    },
+}
+
+
+def reset_atom(state: str, api: str):
+    """Reset a well atom to blank slate before the agent starts."""
+    well_dir = Path("wells") / state / api
+
+    # Preserve well-specific metadata from existing params
+    params_file = well_dir / "params.json"
+    meta = {}
+    if params_file.exists():
+        old = json.loads(params_file.read_text(encoding="utf-8"))
+        for key in ("state", "vintage", "well_type"):
+            if key in old:
+                meta[key] = old[key]
+
+    # Reset params to baseline with preserved metadata
+    params = {**BASELINE_PARAMS, **meta}
+    params_file.write_text(json.dumps(params, indent=2))
+
+    # Clear trace, hindcast, and fit
+    (well_dir / "trace.jsonl").write_text("")
+    (well_dir / "hindcast.json").write_text("[]")
+    fit_file = well_dir / "fit.json"
+    if fit_file.exists():
+        fit_file.unlink()
+
 
 def run_agent_on_atom(state: str, api: str, n_iterations: int = 50) -> str:
     """Spawn a Claude Code instance targeting one well."""
+    reset_atom(state, api)
+
     program = (Path("program.md").read_text(encoding="utf-8")
                .replace("{api}", api)
                .replace("{state}", state))
@@ -49,7 +99,9 @@ def main():
     parser.add_argument("--max-workers", type=int, default=4,
                         help="Parallel agent count (default: 4)")
     parser.add_argument("--iterations", type=int, default=50,
-                        help="Max iterations per well (default: 50)")
+                        help="Max LLM turns per well (default: 50). "
+                             "Each optimization iteration costs ~4-5 turns, "
+                             "so 50 turns ≈ 10 experiments.")
     parser.add_argument("--wells", nargs="*", default=None,
                         help="Specific well APIs to run (default: all)")
     args = parser.parse_args()

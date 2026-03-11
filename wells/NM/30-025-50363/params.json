@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "description": "Baseline \u2014 global defaults",
+  "version": 10,
+  "description": "di_initial=1.0 \u2014 testing if faster initial decline starting point finds better local minimum for late-time behavior",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 3,

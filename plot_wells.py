@@ -145,7 +145,7 @@ def get_mape(entry):
 
 
 def get_note(entry):
-    return sanitize_text(entry.get("note", entry.get("observation", "")))
+    return sanitize_text(entry.get("note", entry.get("description", entry.get("observation", ""))))
 
 
 def get_param_change(entry):

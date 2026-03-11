@@ -1,12 +1,12 @@
 {
-  "version": 1,
-  "description": "Baseline \u2014 global defaults",
+  "version": 11,
+  "description": "peak_merge_distance=2 — smaller merge distance keeps initial peak (month 3) and Nov 2023 bump (month 11) as separate peaks, potentially shifting fit to post-bump decline",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 3,
     "outlier_window": 3,
     "outlier_threshold": 0.3,
-    "peak_merge_distance": 3,
+    "peak_merge_distance": 2,
     "min_clean_months": 3
   },
   "fitting": {
