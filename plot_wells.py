@@ -124,6 +124,8 @@ def read_trace(trace_path):
 
 def is_improved(entry):
     """Handle multiple trace formats."""
+    if "kept" in entry:
+        return entry["kept"] is True
     if "improved" in entry:
         return entry["improved"] is True
     if "result" in entry:
@@ -137,6 +139,8 @@ def get_mape(entry):
         return entry["mape_after"]
     if "hindcast_mape" in entry:
         return entry["hindcast_mape"]
+    if "mape" in entry:
+        return entry["mape"]
     return None
 
 
@@ -286,16 +290,18 @@ def plot_well(state, api, output_dir="plots"):
     kept_indices = [i for i, (_, _, imp, _, _) in enumerate(all_versions) if imp]
     rejected_indices = [i for i, (_, _, imp, _, _) in enumerate(all_versions) if not imp]
 
-    # --- Figure layout: taller to give text panel room ---
+    # --- Figure layout: 2-row left (decline 70%, MAPE 30%) + text right ---
     n_trace = len(all_versions)
-    fig_height = max(6.5, 5.5 + n_trace * 0.12)
+    fig_height = max(7.5, 6.5 + n_trace * 0.12)
     fig = plt.figure(figsize=(13, fig_height), facecolor="white")
     gs = gridspec.GridSpec(
-        1, 2, width_ratios=[3, 2], wspace=0.03,
-        left=0.06, right=0.97, top=0.92, bottom=0.10,
+        2, 2, width_ratios=[3, 2], height_ratios=[7, 3],
+        wspace=0.03, hspace=0.35,
+        left=0.06, right=0.97, top=0.92, bottom=0.08,
     )
-    ax = fig.add_subplot(gs[0])
-    ax_text = fig.add_subplot(gs[1])
+    ax = fig.add_subplot(gs[0, 0])          # decline curve (top-left)
+    ax_mape = fig.add_subplot(gs[1, 0])     # MAPE trajectory (bottom-left)
+    ax_text = fig.add_subplot(gs[:, 1])     # trace text (full right column)
     ax_text.axis("off")
 
     month_indices = np.arange(total_months)
@@ -304,18 +310,17 @@ def plot_well(state, api, output_dir="plots"):
     tick_positions = list(range(0, total_months, tick_step))
     tick_labels = [dates[i] for i in tick_positions]
 
-    # --- Production data ---
-    ax.plot(
+    # --- Production data (scatter dots) ---
+    ax.scatter(
         month_indices[:train_months], oil[:train_months],
-        color="#2ca02c", linewidth=1.3, zorder=10, label="Observed (training)",
+        color="#2ca02c", s=12, zorder=10, label="Observed (training)",
+        edgecolors="none", alpha=0.8,
     )
 
-    holdout_x = month_indices[train_months - 1:]
-    holdout_y = [oil[train_months - 1]] + oil_holdout
-    ax.plot(
-        holdout_x, holdout_y,
-        color="#7f7f7f", linewidth=1.3, linestyle="--", zorder=10,
-        label="Observed (holdout)",
+    ax.scatter(
+        month_indices[train_months:], oil_holdout,
+        color="#7f7f7f", s=12, zorder=10, marker="D",
+        label="Observed (holdout)", edgecolors="none", alpha=0.8,
     )
 
     ax.axvline(
@@ -447,9 +452,10 @@ def plot_well(state, api, output_dir="plots"):
 
     # --- Legend: compact, shows encoding scheme ---
     legend_handles = [
-        Line2D([0], [0], color="#2ca02c", linewidth=1.3, label="Observed (training)"),
-        Line2D([0], [0], color="#7f7f7f", linewidth=1.3, linestyle="--",
-               label="Observed (holdout)"),
+        Line2D([0], [0], marker="o", color="w", markerfacecolor="#2ca02c",
+               markersize=5, label="Observed (training)"),
+        Line2D([0], [0], marker="D", color="w", markerfacecolor="#7f7f7f",
+               markersize=4, label="Observed (holdout)"),
         Line2D([0], [0], color=KEPT_COLORS[0], linewidth=1.0, linestyle="-",
                label="Kept iterations (solid, blue)"),
         Line2D([0], [0], color=REJECTED_COLOR, linewidth=0.7, linestyle=":",
@@ -460,6 +466,78 @@ def plot_well(state, api, output_dir="plots"):
 
     ax.legend(handles=legend_handles, loc="upper right", framealpha=0.9,
               edgecolor="#cccccc", fancybox=False)
+
+    # --- Bottom-left panel: MAPE trajectory ---
+    # Build MAPE data from trace + hindcast.json (fills gaps for missing trace entries)
+    mape_versions_kept, mape_values_kept = [], []
+    mape_versions_rej, mape_values_rej = [], []
+    best_mape_ver, best_mape_point = None, None
+
+    # Index hindcast.json by version for fallback
+    hindcast_by_ver = {h["version"]: h["mape"] for h in hindcast if "version" in h and "mape" in h}
+
+    # Collect from trace-reconstructed versions
+    trace_vers = set()
+    for ver, _, improved, mape, _ in all_versions:
+        trace_vers.add(ver)
+        m = None
+        if mape is not None:
+            try:
+                m = float(mape)
+            except (ValueError, TypeError):
+                pass
+        # Fall back to hindcast.json if trace had no MAPE
+        if m is None and ver in hindcast_by_ver:
+            m = float(hindcast_by_ver[ver])
+        if m is None:
+            continue
+        if improved:
+            mape_versions_kept.append(ver)
+            mape_values_kept.append(m)
+        else:
+            mape_versions_rej.append(ver)
+            mape_values_rej.append(m)
+
+    # Add versions from hindcast.json that are missing from trace entirely
+    for ver, m in sorted(hindcast_by_ver.items()):
+        if ver not in trace_vers:
+            try:
+                mape_versions_kept.append(ver)
+                mape_values_kept.append(float(m))
+            except (ValueError, TypeError):
+                pass
+
+    # Find best MAPE point (lowest kept)
+    if mape_values_kept:
+        best_idx = int(np.argmin(mape_values_kept))
+        best_mape_ver = mape_versions_kept[best_idx]
+        best_mape_point = mape_values_kept[best_idx]
+
+    # Baseline MAPE (v1)
+    baseline_mape = mape_values_kept[0] if mape_values_kept else None
+
+    ax_mape.scatter(mape_versions_kept, mape_values_kept, color=KEPT_COLORS[3],
+                    s=25, zorder=5, edgecolors="none", label="Kept")
+    ax_mape.scatter(mape_versions_rej, mape_values_rej, color=REJECTED_COLOR,
+                    s=18, zorder=4, edgecolors="none", alpha=0.6, label="Rejected")
+
+    if best_mape_ver is not None:
+        ax_mape.scatter([best_mape_ver], [best_mape_point], color=BEST_COLOR,
+                        s=80, zorder=6, marker="*", label=f"Best (v{best_mape_ver})")
+
+    if baseline_mape is not None:
+        ax_mape.axhline(y=baseline_mape, color="#aaaaaa", linewidth=0.6,
+                        linestyle="--", zorder=2, label="Baseline MAPE")
+
+    ax_mape.set_xlabel("Parameter version")
+    ax_mape.set_ylabel("Hindcast MAPE")
+    ax_mape.set_title("MAPE trajectory", fontsize=9, fontweight="bold", pad=6)
+    ax_mape.grid(True, axis="both", color="#e0e0e0", linewidth=0.3, zorder=0)
+    ax_mape.spines["top"].set_visible(False)
+    ax_mape.spines["right"].set_visible(False)
+    ax_mape.set_ylim(bottom=0)
+    ax_mape.legend(fontsize=6, loc="upper right", framealpha=0.9,
+                   edgecolor="#cccccc", fancybox=False)
 
     # --- Right panel: trace table + full reasoning ---
     lines = []

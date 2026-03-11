@@ -12,13 +12,16 @@ Do not modify production.csv.
 4. Propose ONE parameter change. Write your reasoning in the description field.
 5. Update params.json with the change (increment version)
 6. Run: python run_eval.py {state} {api}
-7. If hindcast_mape improved:
-     git add wells/{state}/{api}/params.json wells/{state}/{api}/fit.json
+7. Append your observation to trace.jsonl — this MUST happen after EVERY experiment,
+   whether it improved or not. Include these fields:
+     {"version": N, "parameter": "...", "from": old_val, "to": new_val,
+      "mape_before": ..., "mape_after": ..., "kept": true/false,
+      "improved": true/false, "note": "your reasoning..."}
+8. If hindcast_mape improved (kept: true):
+     git add wells/{state}/{api}/params.json wells/{state}/{api}/fit.json wells/{state}/{api}/trace.jsonl
      git commit -m "{api} v{version}: {description}"
-   If hindcast_mape did not improve:
-     git reset HEAD~1
+   If hindcast_mape did not improve (kept: false):
      git checkout wells/{state}/{api}/params.json
-8. Append your observation to trace.jsonl
 9. Go to step 1
 
 ## Rules
