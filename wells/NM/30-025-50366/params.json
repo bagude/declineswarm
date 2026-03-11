@@ -1,10 +1,10 @@
 {
-  "version": 1,
-  "description": "Baseline \u2014 global defaults",
+  "version": 7,
+  "description": "outlier_window=7 — window=3 fails to flag Jul-2023 shut-in (2854 bbl) because local median includes the dip itself (median≈7805, 0.30×7805=2342<2854). Window=7 raises median to ~13054 so 2854<0.30×13054=3916, correctly flagging the shut-in",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 3,
-    "outlier_window": 3,
+    "outlier_window": 7,
     "outlier_threshold": 0.3,
     "peak_merge_distance": 3,
     "min_clean_months": 3
