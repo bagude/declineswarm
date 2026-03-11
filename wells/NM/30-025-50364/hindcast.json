@@ -1,57 +1,7 @@
 [
   {
-    "version": 1,
-    "mape": 0.5757,
-    "r2_outsample": -1.4127
-  },
-  {
     "version": 2,
     "mape": 0.5757,
     "r2_outsample": -1.4127
-  },
-  {
-    "version": 3,
-    "mape": 0.5757,
-    "r2_outsample": -1.4127
-  },
-  {
-    "version": 4,
-    "mape": 0.5757,
-    "r2_outsample": -1.4127
-  },
-  {
-    "version": 5,
-    "mape": 9.5115,
-    "r2_outsample": -392.4308
-  },
-  {
-    "version": 6,
-    "mape": 2.9959,
-    "r2_outsample": -39.1083
-  },
-  {
-    "version": 7,
-    "mape": 2.2349,
-    "r2_outsample": -20.1332
-  },
-  {
-    "version": 8,
-    "mape": 0.8595,
-    "r2_outsample": -2.4519
-  },
-  {
-    "version": 9,
-    "mape": 1.1841,
-    "r2_outsample": -4.7403
-  },
-  {
-    "version": 10,
-    "mape": 0.5757,
-    "r2_outsample": -1.4127
-  },
-  {
-    "version": 11,
-    "mape": 0.6234,
-    "r2_outsample": -1.1292
   }
 ]
