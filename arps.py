@@ -205,7 +205,10 @@ def fit_arps(
     residuals = prod_daily - predicted
     ss_res = np.sum(residuals ** 2)
     ss_tot = np.sum((prod_daily - np.mean(prod_daily)) ** 2)
-    r_squared = 1.0 - (ss_res / ss_tot) if ss_tot > 0 else 0.0
+    if ss_tot > 0:
+        r_squared = 1.0 - (ss_res / ss_tot)
+    else:
+        r_squared = 1.0 if ss_res == 0 else 0.0
 
     return {
         "decline_model": model_type,

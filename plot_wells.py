@@ -24,8 +24,7 @@ from matplotlib.lines import Line2D
 import textwrap
 
 from arps import create_model, generate_forecast
-from preprocessing import detect_decline_start, filter_outliers
-from arps import fit_arps
+from evaluation import preprocess_and_fit
 
 
 # Journal style
@@ -213,35 +212,8 @@ def reconstruct_all_versions(trace_entries):
 
 def generate_version_forecast(params, oil_train, holdout_months):
     """Fit and forecast for a given param set."""
-    pre = params.get("preprocessing", {})
-    fit_params = params.get("fitting", {})
-
     try:
-        anchor = detect_decline_start(
-            oil_train,
-            significance_threshold=pre.get("significance_threshold", 0.50),
-            smoothing_window=pre.get("smoothing_window", 3),
-            peak_merge_distance=pre.get("peak_merge_distance", 3),
-        )
-        filtered = filter_outliers(
-            anchor.production_trimmed,
-            anchor.time_trimmed,
-            window=pre.get("outlier_window", 3),
-            threshold=pre.get("outlier_threshold", 0.30),
-            min_clean_months=pre.get("min_clean_months", 3),
-        )
-        fit_result = fit_arps(
-            filtered.production_clean,
-            filtered.time_clean,
-            model_type="hyperbolic",
-            d_min=fit_params.get("d_min", 0.05),
-            di_initial=fit_params.get("di_initial", 0.50),
-            b_initial=fit_params.get("b_initial", 0.50),
-            qi_guess_strategy=fit_params.get("qi_guess_strategy", "first"),
-            qi_multiplier_upper=fit_params.get("qi_multiplier_upper", 5.0),
-            di_upper_bound=fit_params.get("di_upper_bound", 5.0),
-            b_upper_bound=fit_params.get("b_upper_bound", 2.0),
-        )
+        anchor, filtered, fit_result = preprocess_and_fit(oil_train, params)
     except (ValueError, RuntimeError):
         return None, None
 
