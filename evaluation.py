@@ -57,7 +57,7 @@ def preprocess_and_fit(oil: list[float], params: dict) -> tuple:
         b_initial=fit_params.get("b_initial", 0.50),
         qi_guess_strategy=fit_params.get("qi_guess_strategy", "first"),
         qi_multiplier_upper=fit_params.get("qi_multiplier_upper", 5.0),
-        di_upper_bound=fit_params.get("di_upper_bound", 5.0),
+        di_upper_bound=fit_params.get("di_upper_bound", 0.99),
         b_upper_bound=fit_params.get("b_upper_bound", 2.0),
     )
 

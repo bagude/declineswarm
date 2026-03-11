@@ -17,7 +17,9 @@ Do not modify production.csv.
 1. Read trace.jsonl to see what has been tried and learned so far
 2. Propose ONE parameter change. Update params.json:
    - Increment version
-   - Write your reasoning in the description field
+   - Write your reasoning in the description field.
+     The description MUST include the exact param=value you changed
+     (e.g. "d_min=0.07 — ..."). This is validated before commit.
 3. Run: python run_eval.py {state} {api}
    (This automatically logs the result to trace.jsonl and hindcast.json)
 4. Check the output:
@@ -53,7 +55,7 @@ Fitting:
   b_initial: 0.30 – 1.20
   qi_guess_strategy: "first", "max3", "peak_value"
   qi_multiplier_upper: 3.0 – 10.0
-  di_upper_bound: 2.0 – 5.0
+  (di_upper_bound is hardcoded at 0.99 — petbox-dca requires Di < 1.0. Do not change it.)
 
 ## Priority
 

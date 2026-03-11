@@ -31,7 +31,7 @@ BASELINE_PARAMS = {
         "b_initial": 0.50,
         "qi_guess_strategy": "first",
         "qi_multiplier_upper": 5.0,
-        "di_upper_bound": 5.0,
+        "di_upper_bound": 0.99,
         "b_upper_bound": 2.0,
     },
 }

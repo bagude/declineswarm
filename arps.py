@@ -102,7 +102,7 @@ def fit_arps(
     b_initial: float = 0.50,
     qi_guess_strategy: str = "first",
     qi_multiplier_upper: float = 5.0,
-    di_upper_bound: float = 5.0,
+    di_upper_bound: float = 0.99,
     b_upper_bound: float = 2.0,
 ) -> dict:
     """Fit Arps decline parameters to monthly production.

@@ -129,12 +129,14 @@ def main():
     # Write fit.json and update hindcast.json
     well_dir = Path("wells") / state / api
     if "error" not in result:
-        params = json.loads((well_dir / "params.json").read_text())
         full_fit = result.pop("_full_fit")
 
+        # Read params.json fresh for fit.json write
+        params = json.loads((well_dir / "params.json").read_text())
+        fit_version = params.get("version", 1)
         fit_data = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
-            "param_version": params.get("version", 1),
+            "param_version": fit_version,
             "model": full_fit["model"],
             "qi": round(full_fit["qi"], 2),
             "di": round(full_fit["di"], 4),
@@ -146,15 +148,30 @@ def main():
         }
         (well_dir / "fit.json").write_text(json.dumps(fit_data, indent=2))
 
-        # Append to hindcast.json
+        # Read params.json fresh again for hindcast.json write
+        params = json.loads((well_dir / "params.json").read_text())
+        hindcast_version = params.get("version", 1)
+
         hindcast_file = well_dir / "hindcast.json"
         history = json.loads(hindcast_file.read_text()) if hindcast_file.exists() else []
         history.append({
-            "version": params.get("version", 1),
+            "version": hindcast_version,
             "mape": result["hindcast_mape"],
             "r2_outsample": result["r2_outsample"],
         })
         hindcast_file.write_text(json.dumps(history, indent=2))
+
+        # Validate: params.json version must match fit.json param_version
+        fit_check = json.loads((well_dir / "fit.json").read_text())
+        params_check = json.loads((well_dir / "params.json").read_text())
+        if fit_check["param_version"] != params_check.get("version", 1):
+            print(json.dumps({
+                "error": "version_mismatch",
+                "api": api,
+                "params_version": params_check.get("version", 1),
+                "fit_param_version": fit_check["param_version"],
+            }))
+            sys.exit(1)
 
         # Append to trace.jsonl
         trace_file = well_dir / "trace.jsonl"
@@ -162,7 +179,7 @@ def main():
         cur_mape = result["hindcast_mape"]
         improved = prev_mape is not None and cur_mape < prev_mape
         trace_entry = {
-            "version": params.get("version", 1),
+            "version": hindcast_version,
             "timestamp": fit_data["timestamp"],
             "description": params.get("description", ""),
             "mape": cur_mape,
