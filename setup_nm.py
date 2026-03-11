@@ -92,7 +92,7 @@ def populate_atom(con, entity_key):
             water = row[3] if row[3] is not None else 0.0
             writer.writerow([date_str, oil, gas, water])
 
-    params = {**BASELINE_PARAMS, "state": "NM", "vintage": 2023}
+    params = {**BASELINE_PARAMS, "well_type": "nm_2023", "state": "NM", "vintage": 2023}
     (atom_dir / "params.json").write_text(json.dumps(params, indent=2))
     (atom_dir / "trace.jsonl").write_text("")
     (atom_dir / "hindcast.json").write_text("[]")

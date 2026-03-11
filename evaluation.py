@@ -25,6 +25,45 @@ def read_production(csv_path: str | Path) -> tuple[list[str], list[float], list[
     return dates, oil, gas, water
 
 
+def preprocess_and_fit(oil: list[float], params: dict) -> tuple:
+    """Run the full preprocessing + fitting pipeline on oil production data.
+
+    Returns (anchor, filtered, fit_result) or raises ValueError on failure.
+    """
+    pre = params.get("preprocessing", {})
+    fit_params = params.get("fitting", {})
+
+    anchor = detect_decline_start(
+        oil,
+        significance_threshold=pre.get("significance_threshold", 0.50),
+        smoothing_window=pre.get("smoothing_window", 3),
+        peak_merge_distance=pre.get("peak_merge_distance", 3),
+    )
+
+    filtered = filter_outliers(
+        anchor.production_trimmed,
+        anchor.time_trimmed,
+        window=pre.get("outlier_window", 3),
+        threshold=pre.get("outlier_threshold", 0.30),
+        min_clean_months=pre.get("min_clean_months", 3),
+    )
+
+    fit_result = fit_arps(
+        filtered.production_clean,
+        filtered.time_clean,
+        model_type="hyperbolic",
+        d_min=fit_params.get("d_min", 0.05),
+        di_initial=fit_params.get("di_initial", 0.50),
+        b_initial=fit_params.get("b_initial", 0.50),
+        qi_guess_strategy=fit_params.get("qi_guess_strategy", "first"),
+        qi_multiplier_upper=fit_params.get("qi_multiplier_upper", 5.0),
+        di_upper_bound=fit_params.get("di_upper_bound", 5.0),
+        b_upper_bound=fit_params.get("b_upper_bound", 2.0),
+    )
+
+    return anchor, filtered, fit_result
+
+
 def fit_and_score(production_csv: str | Path, params: dict) -> dict:
     """Fit decline to a well's production and return scores.
 
@@ -42,43 +81,11 @@ def fit_and_score(production_csv: str | Path, params: dict) -> dict:
     if len(oil) < 3:
         return {"error": "insufficient_history", "months": len(oil)}
 
-    pre = params.get("preprocessing", {})
-    fit_params = params.get("fitting", {})
-
-    # Detect decline start
-    anchor = detect_decline_start(
-        oil,
-        significance_threshold=pre.get("significance_threshold", 0.50),
-        smoothing_window=pre.get("smoothing_window", 3),
-        peak_merge_distance=pre.get("peak_merge_distance", 3),
-    )
-
-    # Filter outliers
-    filtered = filter_outliers(
-        anchor.production_trimmed,
-        anchor.time_trimmed,
-        window=pre.get("outlier_window", 3),
-        threshold=pre.get("outlier_threshold", 0.30),
-        min_clean_months=pre.get("min_clean_months", 3),
-    )
+    anchor, filtered, fit_result = preprocess_and_fit(oil, params)
 
     fit_months = len(filtered.production_clean)
     total_months = len(oil)
     outlier_rejection_rate = filtered.outlier_count / max(len(anchor.production_trimmed), 1)
-
-    # Fit Arps
-    fit_result = fit_arps(
-        filtered.production_clean,
-        filtered.time_clean,
-        model_type="hyperbolic",
-        d_min=fit_params.get("d_min", 0.05),
-        di_initial=fit_params.get("di_initial", 0.50),
-        b_initial=fit_params.get("b_initial", 0.50),
-        qi_guess_strategy=fit_params.get("qi_guess_strategy", "first"),
-        qi_multiplier_upper=fit_params.get("qi_multiplier_upper", 5.0),
-        di_upper_bound=fit_params.get("di_upper_bound", 5.0),
-        b_upper_bound=fit_params.get("b_upper_bound", 2.0),
-    )
 
     # Compute gas qi from peak
     peak_idx = anchor.peak_index
