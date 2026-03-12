@@ -2,7 +2,7 @@
 
 AI-driven decline curve analysis. Spawns a swarm of Claude Code agents that each optimize [Arps decline parameters](https://petbox-dca.readthedocs.io/) for a single oil well, using hindcast MAPE as the objective function.
 
-Each agent runs an autonomous experiment loop — proposing one parameter change at a time, evaluating it against a 12-month holdout, and committing improvements to git. The result is a per-well parameter set tuned to that well's production signature.
+Each agent runs an autonomous experiment loop , proposing one parameter change at a time, evaluating it against a 12-month holdout, and committing improvements to git. The result is a per-well parameter set tuned to that well's production signature.
 
 ![Example hindcast figure for NM well 30-025-50366](docs/example_nm_30-025-50366.png)
 
@@ -24,14 +24,14 @@ Each agent runs an autonomous experiment loop — proposing one parameter change
   (keep or revert)
 ```
 
-Each swarm run starts from a **blank slate** — `run_swarm.py` resets every atom to baseline (version 1) before launching agents. This means every run produces a complete, reproducible optimization trace from scratch.
+Each swarm run starts from a **blank slate** , `run_swarm.py` resets every atom to baseline (version 1) before launching agents. This means every run produces a complete, reproducible optimization trace from scratch.
 
 ### The agent loop
 
 1. Evaluate baseline parameters (version 1) to establish starting MAPE
 2. Read `trace.jsonl` to see what has been tried
 3. Propose ONE parameter change with a specific hypothesis
-4. Run `python run_eval.py` — this automatically logs results to `trace.jsonl` and `hindcast.json`
+4. Run `python run_eval.py` , this automatically logs results to `trace.jsonl` and `hindcast.json`
 5. If MAPE improved → `git commit`. If not → revert `params.json` only (trace is preserved)
 6. Repeat until convergence or max turns
 
@@ -42,7 +42,7 @@ Each swarm run starts from a **blank slate** — `run_swarm.py` resets every ato
 | `setup.py` | Pull 50 stratified TX wells (highrate, shale, stripper, conventional) from DuckDB |
 | `setup_nm.py` | Pull NM wells with first production in 2023 (configurable count) |
 | `run_swarm.py` | Reset atoms to baseline, launch parallel Claude Code agents |
-| `program.md` | Agent prompt template — the experiment loop instructions |
+| `program.md` | Agent prompt template , the experiment loop instructions |
 | `run_eval.py` | Fit Arps decline on training data, forecast 12-month holdout, compute MAPE, auto-log to trace |
 | `read_results.py` | Portfolio-level summary across all wells |
 | `plot_wells.py` | Journal-ready per-well hindcast figures with optimization traces |
@@ -76,7 +76,7 @@ declineswarm/
 
 ## The atom
 
-Every well is a self-contained directory — an "atom". An agent working on well `30-025-50362` touches nothing outside `wells/NM/30-025-50362/`. This isolation guarantee makes the swarm safe to run in parallel.
+Every well is a self-contained directory , an "atom". An agent working on well `30-025-50362` touches nothing outside `wells/NM/30-025-50362/`. This isolation guarantee makes the swarm safe to run in parallel.
 
 ### File lifecycle
 
@@ -98,16 +98,16 @@ On each swarm run, `run_swarm.py` resets `params.json` to version 1 baseline, cl
 |-------|---------|
 | **Top left** | Production scatter + decline curve overlays for every version |
 | **Bottom left** | MAPE trajectory across versions (green = kept, red = rejected) |
-| **Right** | Full optimization trace — parameter changes, reasoning, and outcomes |
+| **Right** | Full optimization trace , parameter changes, reasoning, and outcomes |
 
 ### Reading the plots
 
-- **Green dots** — observed production (training period)
-- **Grey dashed** — observed production (12-month holdout)
-- **Blue lines** (light → dark) — kept iterations, showing how the fit evolved
-- **Red dotted** — rejected iterations
-- **Dark navy bold** — best/final version
-- **Right panel** — complete optimization trace with agent reasoning
+- **Green dots** , observed production (training period)
+- **Grey dashed** , observed production (12-month holdout)
+- **Blue lines** (light → dark) , kept iterations, showing how the fit evolved
+- **Red dotted** , rejected iterations
+- **Dark navy bold** , best/final version
+- **Right panel** , complete optimization trace with agent reasoning
 
 <p align="center">
   <img src="docs/example_nm_30-025-50360.png" width="49%" />
@@ -127,18 +127,18 @@ python plot_wells.py NM 30-025-50075              # single NM well
 
 Each well's `params.json` controls two stages:
 
-**Preprocessing** — how production history is prepared before fitting:
-- `significance_threshold` — peak detection sensitivity (0.30–0.75)
-- `smoothing_window` — moving average width for peak finding (2–6)
-- `outlier_window` / `outlier_threshold` — rolling median outlier filter
-- `peak_merge_distance` — merge nearby peaks within N months (2–8)
+**Preprocessing** , how production history is prepared before fitting:
+- `significance_threshold` , peak detection sensitivity (0.30–0.75)
+- `smoothing_window` , moving average width for peak finding (2–6)
+- `outlier_window` / `outlier_threshold` , rolling median outlier filter
+- `peak_merge_distance` , merge nearby peaks within N months (2–8)
 
-**Fitting** — Arps curve fit controls:
-- `d_min` — terminal decline rate floor (0.03–0.10, most impactful parameter)
-- `di_initial` / `b_initial` — optimizer starting guesses
-- `qi_guess_strategy` — how initial rate is estimated (`first`, `max3`, `peak_value`)
-- `qi_multiplier_upper` — upper bound on qi as multiple of guess (3–10)
-- `di_upper_bound` / `b_upper_bound` — optimizer bounds
+**Fitting** , Arps curve fit controls:
+- `d_min` , terminal decline rate floor (0.03–0.10, most impactful parameter)
+- `di_initial` / `b_initial` , optimizer starting guesses
+- `qi_guess_strategy` , how initial rate is estimated (`first`, `max3`, `peak_value`)
+- `qi_multiplier_upper` , upper bound on qi as multiple of guess (3–10)
+- `di_upper_bound` / `b_upper_bound` , optimizer bounds
 
 ## Quick start
 
@@ -174,9 +174,9 @@ python plot_wells.py NM
 
 Inspired by Andrej Karpathy's [autoresearch](https://github.com/karpathy/autoresearch).
 
-Both projects exploit the same core insight: **an LLM can search complex parameter spaces that defeat traditional optimization.** Any real-world objective surface — whether it's GPT validation loss or oil well hindcast error — is riddled with local minima, saddle points, and heuristic traps. Grid search and Bayesian optimization can navigate these surfaces, but they're blind: they see numbers, not reasons.
+Both projects exploit the same core insight: **an LLM can search complex parameter spaces that defeat traditional optimization.** Any real-world objective surface , whether it's GPT validation loss or oil well hindcast error , is riddled with local minima, saddle points, and heuristic traps. Grid search and Bayesian optimization can navigate these surfaces, but they're blind: they see numbers, not reasons.
 
-The LLM changes the game by producing a **reasoning trace between each step**. It reads the history of what's been tried, forms a hypothesis about why the last knob-turn helped or hurt, and chooses the next experiment accordingly. Each iteration is a closed loop: propose a change, evaluate against a single objective function, interpret the result in context, keep or revert. The trace of reasoning is the real differentiator — it's what lets the agent avoid revisiting dead ends, distinguish structural constraints from preprocessing artifacts, and build intuition about the shape of the surface as it searches.
+The LLM changes the game by producing a **reasoning trace between each step**. It reads the history of what's been tried, forms a hypothesis about why the last knob-turn helped or hurt, and chooses the next experiment accordingly. Each iteration is a closed loop: propose a change, evaluate against a single objective function, interpret the result in context, keep or revert. The trace of reasoning is the real differentiator , it's what lets the agent avoid revisiting dead ends, distinguish structural constraints from preprocessing artifacts, and build intuition about the shape of the surface as it searches.
 
 This is the abstraction both projects share: **the LLM as a guided search agent over non-convex objective surfaces, with interpretable reasoning at every step.**
 
