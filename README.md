@@ -119,7 +119,7 @@ python run_swarm.py NM
 python plot_wells.py NM
 ```
 
-The repo ships with 50 New Mexico wells already populated.
+The repo ships with 5 New Mexico wells already populated.
 
 ### Defaults and what they cost
 
@@ -128,7 +128,7 @@ The repo ships with 50 New Mexico wells already populated.
 - **`--max-workers`** (default: **4**) -- number of Claude Code agents running in parallel. Each agent is a separate subprocess with its own context window. 4 workers means 4 wells are being optimized simultaneously. More workers finish faster but hit your API harder.
 - **`--iterations`** (default: **50**) -- maximum LLM turns per agent. Each optimization experiment takes roughly 4-5 turns (read trace, edit params, run scorer, check result, commit or revert), so 50 turns gives each agent about 10 experiments. Agents also stop early if MAPE hasn't improved for 10 consecutive iterations.
 
-With defaults (4 workers, 50 iterations, 50 wells), the swarm processes wells in batches of 4. That's 50 wells x 50 turns = up to 2,500 LLM calls total, though early stopping usually cuts this significantly.
+With defaults (4 workers, 50 iterations, 5 wells), the swarm processes wells in batches of 4. That's 5 wells x 50 turns = up to 250 LLM calls total, though early stopping usually cuts this significantly.
 
 ```bash
 # Start with a single well to see what happens

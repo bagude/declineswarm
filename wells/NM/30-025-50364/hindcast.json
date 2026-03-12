@@ -10,42 +10,32 @@
     "r2_outsample": -1.4127
   },
   {
-    "version": 3,
+    "version": 9,
     "mape": 0.5757,
     "r2_outsample": -1.4127
   },
   {
-    "version": 3,
+    "version": 10,
     "mape": 0.5757,
     "r2_outsample": -1.4127
   },
   {
-    "version": 4,
+    "version": 11,
+    "mape": 1.1841,
+    "r2_outsample": -4.7403
+  },
+  {
+    "version": 12,
     "mape": 0.5757,
     "r2_outsample": -1.4127
   },
   {
-    "version": 4,
-    "mape": 0.5757,
-    "r2_outsample": -1.4128
-  },
-  {
-    "version": 5,
-    "mape": 0.8595,
-    "r2_outsample": -2.4519
-  },
-  {
-    "version": 6,
+    "version": 13,
     "mape": 0.5757,
     "r2_outsample": -1.4127
   },
   {
-    "version": 7,
-    "mape": 0.5757,
-    "r2_outsample": -1.4127
-  },
-  {
-    "version": 8,
+    "version": 14,
     "mape": 0.5757,
     "r2_outsample": -1.4127
   }
