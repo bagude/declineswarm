@@ -1,12 +1,12 @@
 {
-  "version": 2,
-  "description": "di_upper_bound=0.99 — baseline di_upper_bound=5.0 crashes petbox (Di must be <1.0); this well's steep early decline (37599→7410 bbl in 6mo) causes optimizer to push Di above 1.0",
+  "version": 8,
+  "description": "peak_merge_distance=6 — wider merge window might consolidate secondary peaks near the main peak differently, potentially shifting the anchor index. MAPE was 0.5757.",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 3,
     "outlier_window": 3,
     "outlier_threshold": 0.3,
-    "peak_merge_distance": 3,
+    "peak_merge_distance": 6,
     "min_clean_months": 3
   },
   "fitting": {

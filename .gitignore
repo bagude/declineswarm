@@ -2,3 +2,4 @@ __pycache__/
 .claude/
 *.pyc
 plots/
+AGENT_BRIEF_V3.md
