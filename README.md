@@ -170,6 +170,28 @@ python plot_wells.py TX
 python plot_wells.py NM
 ```
 
+## Inspiration
+
+Inspired by Andrej Karpathy's [autoresearch](https://github.com/karpathy/autoresearch).
+
+Both projects exploit the same core insight: **an LLM can search complex parameter spaces that defeat traditional optimization.** Any real-world objective surface — whether it's GPT validation loss or oil well hindcast error — is riddled with local minima, saddle points, and heuristic traps. Grid search and Bayesian optimization can navigate these surfaces, but they're blind: they see numbers, not reasons.
+
+The LLM changes the game by producing a **reasoning trace between each step**. It reads the history of what's been tried, forms a hypothesis about why the last knob-turn helped or hurt, and chooses the next experiment accordingly. Each iteration is a closed loop: propose a change, evaluate against a single objective function, interpret the result in context, keep or revert. The trace of reasoning is the real differentiator — it's what lets the agent avoid revisiting dead ends, distinguish structural constraints from preprocessing artifacts, and build intuition about the shape of the surface as it searches.
+
+This is the abstraction both projects share: **the LLM as a guided search agent over non-convex objective surfaces, with interpretable reasoning at every step.**
+
+| Concept | autoresearch | declineswarm |
+|---------|-------------|--------------|
+| **Domain** | LLM training (GPT) | Oil & gas decline curve analysis |
+| **Objective surface** | Validation bits-per-byte over architecture/hyperparameter space | 12-month hindcast MAPE over preprocessing + Arps parameter space |
+| **What the agent edits** | `train.py` (model architecture, hyperparameters) | `params.json` (preprocessing + Arps fit parameters) |
+| **Evaluation** | 5-minute training run | `run_eval.py` fit + forecast |
+| **Reasoning trace** | Agent notes in commit messages | `trace.jsonl` with per-step hypothesis and outcome |
+| **Instructions** | `program.md` (research directions) | `program.md` (experiment loop template) |
+| **Parallelism** | Single GPU, one experiment at a time | One agent per well, N wells in parallel |
+
+Where autoresearch explores architecture space with depth on a single model, declineswarm explores parameter space with breadth across a portfolio of wells.
+
 ## Requirements
 
 - Python 3.10+
