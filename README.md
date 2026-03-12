@@ -94,6 +94,8 @@ The agents do find improvements. Whether that's because the LLM is actually reas
 
 ## Running it
 
+> **Warning: fully autonomous agents.** The swarm runs with `--dangerously-skip-permissions`, meaning each agent can read files, write files, and run commands without asking. There is no human-in-the-loop confirmation. The only way to stop a running swarm is to kill the process (`kill_claude.sh` or `kill_claude.bat`). Start small, watch the output, and understand what the agents are doing before scaling up.
+
 ### Prerequisites
 
 - Python 3.10+
@@ -107,33 +109,58 @@ git clone <this-repo>
 cd declineswarm
 pip install -r requirements.txt
 
-# 2. Run a single well to see what happens
+# 2. Run the scorer on a single well to verify everything works
 python run_eval.py NM 30-025-50364
 
-# 3. Run the swarm across all NM wells (4 parallel agents by default)
+# 3. Run the swarm
 python run_swarm.py NM
 
 # 4. Plot the results
 python plot_wells.py NM
 ```
 
-The repo ships with 50 New Mexico wells already populated. Each agent gets ~50 turns (about 10 experiments) to improve its well's hindcast MAPE.
+The repo ships with 50 New Mexico wells already populated.
+
+### Defaults and what they cost
+
+`run_swarm.py` has two knobs that control how much work (and spend) the swarm does:
+
+- **`--max-workers`** (default: **4**) -- number of Claude Code agents running in parallel. Each agent is a separate subprocess with its own context window. 4 workers means 4 wells are being optimized simultaneously. More workers finish faster but hit your API harder.
+- **`--iterations`** (default: **50**) -- maximum LLM turns per agent. Each optimization experiment takes roughly 4-5 turns (read trace, edit params, run scorer, check result, commit or revert), so 50 turns gives each agent about 10 experiments. Agents also stop early if MAPE hasn't improved for 10 consecutive iterations.
+
+With defaults (4 workers, 50 iterations, 50 wells), the swarm processes wells in batches of 4. That's 50 wells x 50 turns = up to 2,500 LLM calls total, though early stopping usually cuts this significantly.
+
+```bash
+# Start with a single well to see what happens
+python run_swarm.py NM --wells 30-025-50364 --iterations 20
+
+# Scale up once you're comfortable
+python run_swarm.py NM --max-workers 8 --iterations 50
+```
+
+### Stopping the swarm
+
+The agents run autonomously. To stop them:
+
+```bash
+# Linux/macOS
+./kill_claude.sh
+
+# Windows
+kill_claude.bat
+```
+
+This kills all Claude Code subprocesses. There is no graceful shutdown. Work from the current turn is lost, but all previously committed experiments are safe in git.
 
 ### What each step does
 
 1. **`run_eval.py`** fits a decline curve on all-but-the-last-12 months, forecasts those 12 months, and scores the error (MAPE). This is the scorer the agent calls in its loop.
-2. **`run_swarm.py`** resets each well to baseline parameters, then spawns one Claude Code instance per well. Each agent reads `program.md` for its instructions: propose a parameter change, run the scorer, keep or revert, repeat.
+2. **`run_swarm.py`** resets each well to baseline parameters, then spawns one Claude Code instance per well with `--dangerously-skip-permissions`. Each agent reads `program.md` for its instructions: propose a parameter change, run the scorer, keep or revert, repeat. No human approval is requested at any step.
 3. **`plot_wells.py`** generates hindcast figures showing actual vs. forecast production with the optimization trace.
 
 ### Options
 
 ```bash
-# More parallel agents (costs more, finishes faster)
-python run_swarm.py NM --max-workers 8
-
-# Fewer turns per agent (cheaper, less optimization)
-python run_swarm.py NM --iterations 20
-
 # Target specific wells
 python run_swarm.py NM --wells 30-025-50364 30-025-50366
 
