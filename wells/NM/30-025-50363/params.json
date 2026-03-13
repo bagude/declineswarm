@@ -1,6 +1,6 @@
 {
-  "version": 10,
-  "description": "di_initial=1.0 \u2014 testing if faster initial decline starting point finds better local minimum for late-time behavior",
+  "version": 1,
+  "description": "Baseline -- global defaults",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 3,
@@ -15,7 +15,7 @@
     "b_initial": 0.5,
     "qi_guess_strategy": "first",
     "qi_multiplier_upper": 5.0,
-    "di_upper_bound": 5.0,
+    "di_upper_bound": 0.99,
     "b_upper_bound": 2.0
   },
   "state": "NM",
