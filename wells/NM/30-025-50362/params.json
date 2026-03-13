@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "description": "Baseline \u2014 global defaults",
+  "description": "Baseline -- global defaults",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 3,
@@ -15,7 +15,7 @@
     "b_initial": 0.5,
     "qi_guess_strategy": "first",
     "qi_multiplier_upper": 5.0,
-    "di_upper_bound": 5.0,
+    "di_upper_bound": 0.99,
     "b_upper_bound": 2.0
   },
   "state": "NM",
