@@ -1,11 +1,11 @@
 {
-  "version": 1,
-  "description": "Baseline -- global defaults",
+  "version": 12,
+  "description": "outlier_threshold=0.40 — at 0.50 threshold, MAPE worsened slightly (0.4295 vs 0.4256) while R2 improved, suggesting over-filtering. At 0.40, should catch the most extreme dips (e.g., month 15 at 823 bbl is 44% of median) while keeping borderline points like month 5 (1834 bbl is 49% of median).",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 3,
     "outlier_window": 3,
-    "outlier_threshold": 0.3,
+    "outlier_threshold": 0.4,
     "peak_merge_distance": 3,
     "min_clean_months": 3
   },
