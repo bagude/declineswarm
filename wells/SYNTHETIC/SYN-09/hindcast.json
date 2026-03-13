@@ -6,6 +6,11 @@
   },
   {
     "version": 2,
+    "mape": 0.3235,
+    "r2_outsample": -1.4029
+  },
+  {
+    "version": 3,
     "mape": 0.2512,
     "r2_outsample": -0.6832
   }

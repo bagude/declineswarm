@@ -1,6 +1,6 @@
 {
-  "version": 2,
-  "description": "random: peak_merge_distance=7",
+  "version": 3,
+  "description": "qi_guess_strategy=max3 — first-month oil (5493 bbl) underestimates true peak (8403 bbl month 2). Averaging top 3 months should give better qi initial guess and improve forecast.",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 3,
@@ -13,7 +13,7 @@
     "d_min": 0.05,
     "di_initial": 0.5,
     "b_initial": 0.5,
-    "qi_guess_strategy": "first",
+    "qi_guess_strategy": "max3",
     "qi_multiplier_upper": 5.0,
     "di_upper_bound": 0.99,
     "b_upper_bound": 2.0
