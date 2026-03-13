@@ -1,12 +1,12 @@
 {
-  "version": 4,
-  "description": "random: b_upper_bound=1.177",
+  "version": 5,
+  "description": "random: peak_merge_distance=5",
   "preprocessing": {
     "significance_threshold": 0.6922,
     "smoothing_window": 3,
     "outlier_window": 3,
     "outlier_threshold": 0.3937,
-    "peak_merge_distance": 3,
+    "peak_merge_distance": 5,
     "min_clean_months": 3
   },
   "fitting": {
