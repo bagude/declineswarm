@@ -1,11 +1,11 @@
 {
-  "version": 2,
-  "description": "random: significance_threshold=0.6922",
+  "version": 3,
+  "description": "random: outlier_threshold=0.3937",
   "preprocessing": {
     "significance_threshold": 0.6922,
     "smoothing_window": 3,
     "outlier_window": 3,
-    "outlier_threshold": 0.3,
+    "outlier_threshold": 0.3937,
     "peak_merge_distance": 3,
     "min_clean_months": 3
   },
