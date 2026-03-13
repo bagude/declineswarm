@@ -1,6 +1,6 @@
 {
-  "version": 3,
-  "description": "random: outlier_threshold=0.3937",
+  "version": 4,
+  "description": "random: b_upper_bound=1.177",
   "preprocessing": {
     "significance_threshold": 0.6922,
     "smoothing_window": 3,
@@ -16,6 +16,6 @@
     "qi_guess_strategy": "first",
     "qi_multiplier_upper": 5.0,
     "di_upper_bound": 0.99,
-    "b_upper_bound": 2.0
+    "b_upper_bound": 1.177
   }
 }
