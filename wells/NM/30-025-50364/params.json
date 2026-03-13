@@ -1,12 +1,12 @@
 {
-  "version": 1,
-  "description": "Baseline -- global defaults",
+  "version": 16,
+  "description": "smoothing_window=4 — window 3 gives MAPE 0.5757, window 5 gives 0.86, window 6 gives 1.18; testing window 4 to see if fit transition is gradual or abrupt",
   "preprocessing": {
     "significance_threshold": 0.5,
-    "smoothing_window": 3,
+    "smoothing_window": 4,
     "outlier_window": 3,
     "outlier_threshold": 0.3,
-    "peak_merge_distance": 3,
+    "peak_merge_distance": 6,
     "min_clean_months": 3
   },
   "fitting": {
