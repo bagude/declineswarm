@@ -1,11 +1,11 @@
 {
-  "version": 3,
-  "description": "random: peak_merge_distance=7",
+  "version": 4,
+  "description": "outlier_threshold=0.20 — sharp dips at months 25 (4862 vs ~7.5k neighbors), 39-40 (2232-2716 vs ~6k), and 58 (1790 vs ~4.6k) are operational shutdowns not captured by current threshold 0.30",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 2,
     "outlier_window": 3,
-    "outlier_threshold": 0.3,
+    "outlier_threshold": 0.20,
     "peak_merge_distance": 7,
     "min_clean_months": 3
   },

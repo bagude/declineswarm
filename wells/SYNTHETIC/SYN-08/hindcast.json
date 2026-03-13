@@ -10,57 +10,7 @@
     "r2_outsample": 0.2902
   },
   {
-    "version": 2,
-    "mape": 0.0535,
-    "r2_outsample": 0.2902
-  },
-  {
-    "version": 2,
-    "mape": 0.0564,
-    "r2_outsample": 0.2254
-  },
-  {
-    "version": 2,
-    "mape": 0.054,
-    "r2_outsample": 0.3311
-  },
-  {
-    "version": 2,
-    "mape": 0.0535,
-    "r2_outsample": 0.2902
-  },
-  {
-    "version": 2,
-    "mape": 0.0535,
-    "r2_outsample": 0.2902
-  },
-  {
-    "version": 2,
-    "mape": 0.0659,
-    "r2_outsample": 0.0503
-  },
-  {
-    "version": 2,
-    "mape": 0.0535,
-    "r2_outsample": 0.2902
-  },
-  {
-    "version": 2,
-    "mape": 0.0533,
-    "r2_outsample": 0.3055
-  },
-  {
-    "version": 3,
-    "mape": 0.0533,
-    "r2_outsample": 0.3055
-  },
-  {
-    "version": 3,
-    "mape": 0.0533,
-    "r2_outsample": 0.3055
-  },
-  {
-    "version": 3,
+    "version": 4,
     "mape": 0.0528,
     "r2_outsample": 0.3475
   }
