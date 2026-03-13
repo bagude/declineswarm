@@ -1,0 +1,2 @@
+{"version": 1, "timestamp": "2026-03-13T02:20:24.402827+00:00", "description": "Baseline -- global defaults", "mape": 0.3235, "r2_outsample": -1.4029, "r2_insample": 0.8779, "qi": 5349.47, "di": 0.5039, "b": 0.9617, "d_min": 0.05, "convergence": true}
+{"version": 2, "timestamp": "2026-03-13T02:20:24.762130+00:00", "description": "random: peak_merge_distance=7", "mape": 0.2512, "r2_outsample": -0.6832, "r2_insample": 0.9204, "qi": 7996.37, "di": 0.5816, "b": 0.8868, "d_min": 0.05, "convergence": true, "mape_prev": 0.3235, "improved": true}
