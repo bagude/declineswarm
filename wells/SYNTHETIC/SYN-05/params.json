@@ -1,8 +1,8 @@
 {
-  "version": 1,
-  "description": "Baseline -- global defaults",
+  "version": 6,
+  "description": "significance_threshold=0.45 — secondary peak at month 8 (10585 bbl) is 49% of global max (21465), just below current 50% threshold. Lowering to 0.45 makes it significant, so decline starts from month 8, skipping volatile shut-in months 3 and 6.",
   "preprocessing": {
-    "significance_threshold": 0.5,
+    "significance_threshold": 0.45,
     "smoothing_window": 3,
     "outlier_window": 3,
     "outlier_threshold": 0.3,
