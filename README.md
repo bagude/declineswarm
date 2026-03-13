@@ -113,7 +113,7 @@ To fix the flat landscape problem, `generate_synthetic.py` creates wells with kn
 Running Claude and random search on 10 synthetic wells (easy + medium tiers, 50 iterations each):
 
 <p align="center">
-  <img src="ablation_results/comparison_bars.png" width="100%" />
+  <img src="docs/ablation_comparison_bars.png" width="100%" />
 </p>
 
 | Metric | Claude | Random |
@@ -124,19 +124,19 @@ Running Claude and random search on 10 synthetic wells (easy + medium tiers, 50 
 | Losses | 0 | 4 |
 
 <p align="center">
-  <img src="ablation_results/improvement_delta.png" width="100%" />
+  <img src="docs/ablation_improvement_delta.png" width="100%" />
 </p>
 
 Claude never loses. On the 4 wells where the agents diverge, Claude finds improvements that random misses (SYN-05, SYN-07) or finds deeper improvements (SYN-09: 50% MAPE reduction vs 22% for random). The Wilcoxon signed-rank test is not significant (p=0.87) because 6/10 wells are tied, but the 4-0 win record is directionally strong.
 
 <p align="center">
-  <img src="ablation_results/win_loss_summary.png" width="100%" />
+  <img src="docs/ablation_win_loss_summary.png" width="100%" />
 </p>
 
 The per-well convergence curves tell the story best. SYN-09 shows Claude's curve dropping steeply around iteration 7-8 while random plateaus higher. SYN-05 shows Claude finding a step-down that random never discovers.
 
 <p align="center">
-  <img src="ablation_results/convergence_per_well.png" width="100%" />
+  <img src="docs/ablation_convergence_per_well.png" width="100%" />
 </p>
 
 ### Interpretation
