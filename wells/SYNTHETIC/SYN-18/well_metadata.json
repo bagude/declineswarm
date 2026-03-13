@@ -1,0 +1,59 @@
+{
+  "well_id": "SYN-18",
+  "regime": "R4",
+  "regime_name": "Bakken mature",
+  "tier": "adversarial",
+  "description": "Bakken, 4-event chain: shut-in + allocation noise + ESP install + ESP failure",
+  "ground_truth": {
+    "qi_oil": 5455.171486164616,
+    "qi_gas": null,
+    "Di": 0.6865280593194695,
+    "b": 1.2896741899389306,
+    "d_min": 0.0989148721783626,
+    "gor": 4.387667784092377,
+    "wor": 3.8574927456160615
+  },
+  "noise_sigma": 0.15,
+  "events": [
+    {
+      "function": "apply_shut_in",
+      "params": {
+        "start_month": 6,
+        "duration_months": 3
+      }
+    },
+    {
+      "function": "apply_allocation_noise",
+      "params": {
+        "months": [
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29
+        ],
+        "magnitude": 0.3
+      }
+    },
+    {
+      "function": "apply_esp_installation",
+      "params": {
+        "month": 35,
+        "rate_jump_fraction": 0.5
+      }
+    },
+    {
+      "function": "apply_esp_failure",
+      "params": {
+        "month": 50,
+        "repair_months": 2
+      }
+    }
+  ],
+  "months": 84
+}

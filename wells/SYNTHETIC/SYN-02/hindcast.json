@@ -1,1 +1,62 @@
-[]
+[
+  {
+    "version": 1,
+    "mape": 0.0715,
+    "r2_outsample": 0.2935
+  },
+  {
+    "version": 2,
+    "mape": 0.0715,
+    "r2_outsample": 0.2935
+  },
+  {
+    "version": 3,
+    "mape": 0.0715,
+    "r2_outsample": 0.2935
+  },
+  {
+    "version": 4,
+    "mape": 0.0715,
+    "r2_outsample": 0.2935
+  },
+  {
+    "version": 5,
+    "mape": 0.0715,
+    "r2_outsample": 0.2935
+  },
+  {
+    "version": 6,
+    "mape": 0.0715,
+    "r2_outsample": 0.2935
+  },
+  {
+    "version": 7,
+    "mape": 0.0715,
+    "r2_outsample": 0.2935
+  },
+  {
+    "version": 8,
+    "mape": 0.1023,
+    "r2_outsample": 0.2341
+  },
+  {
+    "version": 9,
+    "mape": 0.0715,
+    "r2_outsample": 0.2935
+  },
+  {
+    "version": 10,
+    "mape": 0.0715,
+    "r2_outsample": 0.2935
+  },
+  {
+    "version": 11,
+    "mape": 0.0715,
+    "r2_outsample": 0.2935
+  },
+  {
+    "version": 12,
+    "mape": 0.0715,
+    "r2_outsample": 0.2935
+  }
+]

@@ -23,5 +23,40 @@
     "version": 2,
     "mape": 0.0947,
     "r2_outsample": -0.0296
+  },
+  {
+    "version": 3,
+    "mape": 0.0947,
+    "r2_outsample": -0.0296
+  },
+  {
+    "version": 3,
+    "mape": 0.1025,
+    "r2_outsample": -0.1567
+  },
+  {
+    "version": 3,
+    "mape": 0.0947,
+    "r2_outsample": -0.0296
+  },
+  {
+    "version": 3,
+    "mape": 0.0947,
+    "r2_outsample": -0.0296
+  },
+  {
+    "version": 3,
+    "mape": 0.0947,
+    "r2_outsample": -0.0296
+  },
+  {
+    "version": 3,
+    "mape": 0.0947,
+    "r2_outsample": -0.0296
+  },
+  {
+    "version": 3,
+    "mape": 0.0947,
+    "r2_outsample": -0.0296
   }
 ]

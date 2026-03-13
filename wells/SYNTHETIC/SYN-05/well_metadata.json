@@ -1,0 +1,27 @@
+{
+  "well_id": "SYN-05",
+  "regime": "R2",
+  "regime_name": "Eagle Ford moderate",
+  "tier": "easy",
+  "description": "Eagle Ford, 1 partial production month (month 5)",
+  "ground_truth": {
+    "qi_oil": 22195.733470855226,
+    "qi_gas": null,
+    "Di": 0.6299988791942026,
+    "b": 0.8664804229357465,
+    "d_min": 0.06177240365548465,
+    "gor": 1.9141568134584026,
+    "wor": 1.7892932100587995
+  },
+  "noise_sigma": 0.05,
+  "events": [
+    {
+      "function": "apply_partial_month",
+      "params": {
+        "month": 5,
+        "days_produced": 15
+      }
+    }
+  ],
+  "months": 72
+}

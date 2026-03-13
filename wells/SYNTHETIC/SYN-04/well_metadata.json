@@ -1,0 +1,27 @@
+{
+  "well_id": "SYN-04",
+  "regime": "R1",
+  "regime_name": "Permian tight oil",
+  "tier": "easy",
+  "description": "Permian tight oil, 1 voluntary shut-in (month 8, 6 weeks)",
+  "ground_truth": {
+    "qi_oil": 11774.669739841394,
+    "qi_gas": null,
+    "Di": 0.7976056415701815,
+    "b": 0.9087501657536363,
+    "d_min": 0.07163758684742334,
+    "gor": 1.289334430821416,
+    "wor": 0.52759091769975
+  },
+  "noise_sigma": 0.05,
+  "events": [
+    {
+      "function": "apply_shut_in",
+      "params": {
+        "start_month": 8,
+        "duration_months": 2
+      }
+    }
+  ],
+  "months": 72
+}

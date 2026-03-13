@@ -1,9 +1,9 @@
 {
-  "version": 4,
-  "description": "outlier_threshold=0.20 — sharp dips at months 25 (4862 vs ~7.5k neighbors), 39-40 (2232-2716 vs ~6k), and 58 (1790 vs ~4.6k) are operational shutdowns not captured by current threshold 0.30",
+  "version": 13,
+  "description": "smoothing_window=5 — production has significant month-to-month scatter (e.g. months 17-22 swing between 7.2k and 10.7k bbl); wider smoothing should reduce noise and give optimizer cleaner signal for curve fitting",
   "preprocessing": {
     "significance_threshold": 0.5,
-    "smoothing_window": 2,
+    "smoothing_window": 5,
     "outlier_window": 3,
     "outlier_threshold": 0.20,
     "peak_merge_distance": 7,

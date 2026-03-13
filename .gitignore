@@ -2,4 +2,5 @@ __pycache__/
 .claude/
 *.pyc
 plots/
+ablation_results/
 AGENT_BRIEF_V3.md

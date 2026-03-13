@@ -1,0 +1,19 @@
+{
+  "well_id": "SYN-01",
+  "regime": "R1",
+  "regime_name": "Permian tight oil",
+  "tier": "easy",
+  "description": "Permian tight oil, no events, clean signal",
+  "ground_truth": {
+    "qi_oil": 9464.214762976455,
+    "qi_gas": null,
+    "Di": 0.7050021510445333,
+    "b": 1.0557707193831534,
+    "d_min": 0.07550058636738238,
+    "gor": 3.9458848566560496,
+    "wor": 2.191748718557278
+  },
+  "noise_sigma": 0.05,
+  "events": [],
+  "months": 72
+}

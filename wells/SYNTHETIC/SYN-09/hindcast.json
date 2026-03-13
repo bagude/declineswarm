@@ -28,5 +28,50 @@
     "version": 6,
     "mape": 0.1609,
     "r2_outsample": -0.0051
+  },
+  {
+    "version": 7,
+    "mape": 0.1609,
+    "r2_outsample": -0.0051
+  },
+  {
+    "version": 8,
+    "mape": 0.1609,
+    "r2_outsample": -0.0051
+  },
+  {
+    "version": 9,
+    "mape": 0.1609,
+    "r2_outsample": -0.0051
+  },
+  {
+    "version": 10,
+    "mape": 0.1609,
+    "r2_outsample": -0.0051
+  },
+  {
+    "version": 11,
+    "mape": 0.1609,
+    "r2_outsample": -0.0051
+  },
+  {
+    "version": 12,
+    "mape": 0.1609,
+    "r2_outsample": -0.0051
+  },
+  {
+    "version": 13,
+    "mape": 0.1609,
+    "r2_outsample": -0.0051
+  },
+  {
+    "version": 14,
+    "mape": 0.2512,
+    "r2_outsample": -0.6832
+  },
+  {
+    "version": 15,
+    "mape": 0.1609,
+    "r2_outsample": -0.0051
   }
 ]

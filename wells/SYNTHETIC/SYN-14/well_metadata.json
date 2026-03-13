@@ -1,0 +1,43 @@
+{
+  "well_id": "SYN-14",
+  "regime": "R2",
+  "regime_name": "Eagle Ford moderate",
+  "tier": "hard",
+  "description": "Eagle Ford, triple event chain: shut-in + frac hit + workover",
+  "ground_truth": {
+    "qi_oil": 19787.40741352559,
+    "qi_gas": null,
+    "Di": 0.7401267129126888,
+    "b": 0.6271019562808049,
+    "d_min": 0.05299942105991971,
+    "gor": 4.364969583739745,
+    "wor": 2.367842379655117
+  },
+  "noise_sigma": 0.12,
+  "events": [
+    {
+      "function": "apply_shut_in",
+      "params": {
+        "start_month": 8,
+        "duration_months": 2
+      }
+    },
+    {
+      "function": "apply_frac_hit",
+      "params": {
+        "month": 22,
+        "severity": 0.3,
+        "recovery_months": 5
+      }
+    },
+    {
+      "function": "apply_workover_bump",
+      "params": {
+        "month": 35,
+        "amplitude_fraction": 0.25,
+        "decay_months": 3
+      }
+    }
+  ],
+  "months": 84
+}

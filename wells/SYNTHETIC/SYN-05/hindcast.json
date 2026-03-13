@@ -28,5 +28,30 @@
     "version": 6,
     "mape": 0.0449,
     "r2_outsample": 0.412
+  },
+  {
+    "version": 7,
+    "mape": 0.0449,
+    "r2_outsample": 0.412
+  },
+  {
+    "version": 8,
+    "mape": 0.0449,
+    "r2_outsample": 0.412
+  },
+  {
+    "version": 9,
+    "mape": 0.0475,
+    "r2_outsample": 0.3876
+  },
+  {
+    "version": 10,
+    "mape": 0.0449,
+    "r2_outsample": 0.412
+  },
+  {
+    "version": 11,
+    "mape": 0.0449,
+    "r2_outsample": 0.412
   }
 ]

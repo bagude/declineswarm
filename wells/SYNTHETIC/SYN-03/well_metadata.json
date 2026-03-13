@@ -1,0 +1,19 @@
+{
+  "well_id": "SYN-03",
+  "regime": "R5",
+  "regime_name": "Conventional vertical",
+  "tier": "easy",
+  "description": "Conventional vertical, no events, validates d_min lower bound",
+  "ground_truth": {
+    "qi_oil": 8533.312883908877,
+    "qi_gas": null,
+    "Di": 0.18129580136568943,
+    "b": 0.3225607637763481,
+    "d_min": 0.047240732329585464,
+    "gor": 1.9006380823125868,
+    "wor": 1.1163890130724443
+  },
+  "noise_sigma": 0.05,
+  "events": [],
+  "months": 72
+}

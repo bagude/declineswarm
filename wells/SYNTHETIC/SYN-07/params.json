@@ -1,6 +1,6 @@
 {
-  "version": 7,
-  "description": "significance_threshold=0.30 -- lowers peak significance cutoff from 549 to 329 bbl, allowing later peaks (e.g. month 18 at 416 bbl) to qualify as most recent significant peak, shifting decline anchor away from month 0",
+  "version": 12,
+  "description": "significance_threshold=0.35 -- testing intermediate threshold (cutoff 384 bbl vs 329 at 0.30 and 549 at 0.50) for a potentially different decline anchor position that better predicts holdout",
   "preprocessing": {
     "significance_threshold": 0.30,
     "smoothing_window": 3,

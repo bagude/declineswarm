@@ -1,8 +1,8 @@
 {
-  "version": 6,
-  "description": "significance_threshold=0.45 — secondary peak at month 8 (10585 bbl) is 49% of global max (21465), just below current 50% threshold. Lowering to 0.45 makes it significant, so decline starts from month 8, skipping volatile shut-in months 3 and 6.",
+  "version": 12,
+  "description": "significance_threshold=0.35 — lowering threshold from 0.45 to 0.35 (7513 bbl) may qualify peaks in months 13-14 (8642, 7404 bbl) as significant, pushing decline start past the noisy first year entirely.",
   "preprocessing": {
-    "significance_threshold": 0.45,
+    "significance_threshold": 0.35,
     "smoothing_window": 3,
     "outlier_window": 3,
     "outlier_threshold": 0.3,

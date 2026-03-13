@@ -92,6 +92,126 @@ The agents do find improvements. Whether that's because the LLM is actually reas
   <img src="docs/example_nm_30-025-50362.png" width="49%" />
 </p>
 
+## Ablation: does the LLM actually reason?
+
+The central question: is Claude doing something meaningfully different from random parameter search, or is the improvement explained by the iteration loop alone?
+
+### Experiment design
+
+A random search agent (`random_agent.py`) mirrors the Claude agent loop exactly but replaces the LLM call with a uniform random draw from each parameter's valid range. Same scorer, same iteration budget, same git commit/revert logic, same 10-step plateau stop rule. The random agent is memoryless by design.
+
+### Real wells: flat landscape
+
+On the 5 NM wells shipped with the repo, both Claude and random achieved identical final MAPEs. The parameter landscape was nearly flat: `curve_fit` absorbed most parameter variation, making fitting parameters invisible to the hindcast scorer. Only ~3 preprocessing parameters could move MAPE at all, and the 10-consecutive-non-improvement stop rule fired before random search could explore them.
+
+### Synthetic wells: controlled difficulty
+
+To fix the flat landscape problem, `generate_synthetic.py` creates wells with known ground truth parameters and injected operational events (shut-ins, frac hits, workovers, pipeline curtailments, refracs, ESP changes, and more). The generator supports 6 base decline regimes across 4 difficulty tiers (easy, medium, hard, adversarial) with 20 predefined wells covering the full range.
+
+### Results on synthetic wells
+
+Running Claude and random search on 10 synthetic wells (easy + medium tiers, 50 iterations each):
+
+<p align="center">
+  <img src="ablation_results/comparison_bars.png" width="100%" />
+</p>
+
+| Metric | Claude | Random |
+|--------|--------|--------|
+| Wells improved from baseline | **4/10** | 3/10 |
+| Head-to-head wins | **4** | 0 |
+| Ties | 6 | 6 |
+| Losses | 0 | 4 |
+
+<p align="center">
+  <img src="ablation_results/improvement_delta.png" width="100%" />
+</p>
+
+Claude never loses. On the 4 wells where the agents diverge, Claude finds improvements that random misses (SYN-05, SYN-07) or finds deeper improvements (SYN-09: 50% MAPE reduction vs 22% for random). The Wilcoxon signed-rank test is not significant (p=0.87) because 6/10 wells are tied, but the 4-0 win record is directionally strong.
+
+<p align="center">
+  <img src="ablation_results/win_loss_summary.png" width="100%" />
+</p>
+
+The per-well convergence curves tell the story best. SYN-09 shows Claude's curve dropping steeply around iteration 7-8 while random plateaus higher. SYN-05 shows Claude finding a step-down that random never discovers.
+
+<p align="center">
+  <img src="ablation_results/convergence_per_well.png" width="100%" />
+</p>
+
+### Interpretation
+
+The result is somewhere between H1 (Claude is better) and H3 (no difference). Claude wins when it wins, never loses, but most wells tie because neither agent can improve them. The LLM reasoning appears to help on wells where the landscape has structure to exploit (events that stress preprocessing), but the sample is too small for statistical significance. More reps and the hard/adversarial tier wells would sharpen the picture.
+
+## Synthetic data generator
+
+`generate_synthetic.py` creates wells with known ground truth parameters and injected operational events. This gives the ablation experiment a controlled surface to work on rather than relying on real wells that may happen to be near-optimal at baseline.
+
+```bash
+# Generate easy tier wells (SYN-01 through SYN-05)
+python generate_synthetic.py --seed 42
+
+# Generate by difficulty tier
+python generate_synthetic.py --tier medium --seed 42
+python generate_synthetic.py --tier hard --seed 42
+
+# Generate all 20 wells
+python generate_synthetic.py --all --seed 42
+
+# Generate specific wells
+python generate_synthetic.py --wells SYN-01 SYN-09 SYN-15
+```
+
+The portfolio spans 6 base decline regimes (Permian tight oil, Eagle Ford, Marcellus gas, Bakken mature, conventional vertical, post-refrac) and 12 event types defined in `synthetic_events.py`:
+
+| Event | What it does to production |
+|-------|--------------------------|
+| Shut-in | Zeros production, partial recovery with water spike |
+| Frac hit | Severity-based drop, partial recovery, 20% permanent damage |
+| Workover bump | Gaussian-shaped temporary increase |
+| Pipeline curtailment | Soft decline to fraction of rate |
+| Refrac | Production jump + new decline phase |
+| Partial month | Single month scaled by days produced |
+| Allocation noise | Random multiplicative noise on specified months |
+| ESP installation | Sustained rate jump from installation onward |
+| ESP failure | Sharp V-shape drop and repair |
+| Liquid loading | Gradual decline steepening |
+| Pressure plateau | Flat production hold before resuming decline |
+| GOR breakout | Oil decline acceleration, temporary gas boost |
+
+Each generated well writes `production.csv` (compatible with the existing pipeline), `params.json` (baseline defaults), and `well_metadata.json` (ground truth parameters, not exposed to agents).
+
+## Ablation experiment
+
+`run_ablation.py` runs Claude and random search agents on the same wells under identical conditions, saving results for statistical comparison.
+
+```bash
+# Quick pipeline verification (random only, 1 rep)
+python run_ablation.py SYNTHETIC --reps 1 --condition random --iterations 20
+
+# Full ablation (both conditions, 3 reps)
+python run_ablation.py SYNTHETIC
+
+# Single condition
+python run_ablation.py SYNTHETIC --condition claude
+python run_ablation.py SYNTHETIC --condition random
+
+# Specific wells
+python run_ablation.py SYNTHETIC --wells SYN-01 SYN-05 SYN-09
+```
+
+Results are saved to `ablation_results/` and analyzed with:
+
+```bash
+python analyze_ablation.py
+```
+
+This produces:
+- `summary.csv` with per-well, per-condition metrics
+- `boxplot_mape.png` and `convergence.png` comparison plots
+- Wilcoxon signed-rank test (paired final MAPEs) and Mann-Whitney U test (convergence speed)
+- An interpretation verdict mapping results to the experiment hypotheses
+
 ## Running it
 
 > **Warning: fully autonomous agents.** The swarm runs with `--dangerously-skip-permissions`, meaning each agent can read files, write files, and run commands without asking. There is no human-in-the-loop confirmation. The only way to stop a running swarm is to kill the process (`kill_claude.sh` or `kill_claude.bat`). Start small, watch the output, and understand what the agents are doing before scaling up.
@@ -119,7 +239,7 @@ python run_swarm.py NM
 python plot_wells.py NM
 ```
 
-The repo ships with 5 New Mexico wells already populated.
+The repo ships with 5 New Mexico wells and a synthetic data generator that creates up to 20 controlled-difficulty wells.
 
 ### Defaults and what they cost
 

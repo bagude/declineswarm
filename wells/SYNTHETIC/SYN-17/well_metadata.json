@@ -1,0 +1,35 @@
+{
+  "well_id": "SYN-17",
+  "regime": "R3",
+  "regime_name": "Shale gas Marcellus",
+  "tier": "adversarial",
+  "description": "Marcellus, liquid loading + GOR breakout, adversarial noise",
+  "ground_truth": {
+    "qi_oil": 2866.213597379064,
+    "qi_gas": 56180.96984074661,
+    "Di": 0.65143099974527,
+    "b": 0.5742271494801869,
+    "d_min": 0.0528393873546227,
+    "gor": 55.95196926915624,
+    "wor": 1.3836138796692252
+  },
+  "noise_sigma": 0.15,
+  "events": [
+    {
+      "function": "apply_liquid_loading",
+      "params": {
+        "start_month": 15,
+        "steepening_factor": 2.0
+      }
+    },
+    {
+      "function": "apply_gor_breakout",
+      "params": {
+        "start_month": 25,
+        "oil_decline_factor": 1.3,
+        "gas_boost_factor": 1.2
+      }
+    }
+  ],
+  "months": 84
+}

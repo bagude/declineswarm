@@ -13,5 +13,50 @@
     "version": 4,
     "mape": 0.0528,
     "r2_outsample": 0.3475
+  },
+  {
+    "version": 5,
+    "mape": 0.0528,
+    "r2_outsample": 0.3475
+  },
+  {
+    "version": 6,
+    "mape": 0.0528,
+    "r2_outsample": 0.3475
+  },
+  {
+    "version": 7,
+    "mape": 0.0528,
+    "r2_outsample": 0.3475
+  },
+  {
+    "version": 8,
+    "mape": 0.0528,
+    "r2_outsample": 0.3474
+  },
+  {
+    "version": 9,
+    "mape": 0.0528,
+    "r2_outsample": 0.3475
+  },
+  {
+    "version": 10,
+    "mape": 0.0528,
+    "r2_outsample": 0.3475
+  },
+  {
+    "version": 11,
+    "mape": 0.0528,
+    "r2_outsample": 0.3475
+  },
+  {
+    "version": 12,
+    "mape": 0.0528,
+    "r2_outsample": 0.3474
+  },
+  {
+    "version": 13,
+    "mape": 0.0533,
+    "r2_outsample": 0.3055
   }
 ]

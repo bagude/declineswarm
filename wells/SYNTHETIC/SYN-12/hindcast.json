@@ -53,5 +53,55 @@
     "version": 5,
     "mape": 0.2091,
     "r2_outsample": -0.0463
+  },
+  {
+    "version": 6,
+    "mape": 0.2091,
+    "r2_outsample": -0.0463
+  },
+  {
+    "version": 6,
+    "mape": 0.2091,
+    "r2_outsample": -0.0463
+  },
+  {
+    "version": 6,
+    "mape": 0.2091,
+    "r2_outsample": -0.0463
+  },
+  {
+    "version": 6,
+    "mape": 0.2091,
+    "r2_outsample": -0.0463
+  },
+  {
+    "version": 6,
+    "mape": 0.2091,
+    "r2_outsample": -0.0463
+  },
+  {
+    "version": 6,
+    "mape": 0.2091,
+    "r2_outsample": -0.0463
+  },
+  {
+    "version": 6,
+    "mape": 0.2091,
+    "r2_outsample": -0.0463
+  },
+  {
+    "version": 6,
+    "mape": 0.2396,
+    "r2_outsample": -0.5519
+  },
+  {
+    "version": 6,
+    "mape": 0.2396,
+    "r2_outsample": -0.552
+  },
+  {
+    "version": 6,
+    "mape": 0.2091,
+    "r2_outsample": -0.0463
   }
 ]

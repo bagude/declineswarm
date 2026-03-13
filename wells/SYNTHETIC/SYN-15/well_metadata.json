@@ -1,0 +1,28 @@
+{
+  "well_id": "SYN-15",
+  "regime": "R5",
+  "regime_name": "Conventional vertical",
+  "tier": "hard",
+  "description": "Conventional, early pressure plateau delays decline, high noise",
+  "ground_truth": {
+    "qi_oil": 15465.589508584304,
+    "qi_gas": null,
+    "Di": 0.18396338709983567,
+    "b": 0.4897757564074832,
+    "d_min": 0.039473437764212874,
+    "gor": 4.070640252313807,
+    "wor": 4.954424110977889
+  },
+  "noise_sigma": 0.12,
+  "events": [
+    {
+      "function": "apply_pressure_plateau",
+      "params": {
+        "start_month": 1,
+        "duration_months": 8,
+        "plateau_fraction": 0.9
+      }
+    }
+  ],
+  "months": 84
+}

@@ -1,0 +1,34 @@
+{
+  "well_id": "SYN-10",
+  "regime": "R6",
+  "regime_name": "Post-refrac",
+  "tier": "medium",
+  "description": "Post-refrac, partial month + shut-in, moderate noise",
+  "ground_truth": {
+    "qi_oil": 21424.444316865625,
+    "qi_gas": null,
+    "Di": 0.7004417979006312,
+    "b": 1.0974071050837348,
+    "d_min": 0.06323875028581612,
+    "gor": 1.9255980501353438,
+    "wor": 1.880821601596431
+  },
+  "noise_sigma": 0.08,
+  "events": [
+    {
+      "function": "apply_partial_month",
+      "params": {
+        "month": 6,
+        "days_produced": 12
+      }
+    },
+    {
+      "function": "apply_shut_in",
+      "params": {
+        "start_month": 18,
+        "duration_months": 1
+      }
+    }
+  ],
+  "months": 72
+}

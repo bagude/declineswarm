@@ -1,9 +1,9 @@
 {
-  "version": 6,
-  "description": "significance_threshold=0.35 — current 0.5 may be too conservative for decline detection. Production drops 50% from peak (8403) to month 6 (4014). Lower threshold should detect decline earlier and include more data points in fit, improving late-time forecast.",
+  "version": 16,
+  "description": "smoothing_window=2 — less smoothing preserves more of the actual month-to-month production shape. With 43 fit months of relatively clean data (0% outlier rejection), minimal smoothing may let the optimizer fit the true decline curve more accurately.",
   "preprocessing": {
     "significance_threshold": 0.35,
-    "smoothing_window": 3,
+    "smoothing_window": 2,
     "outlier_window": 3,
     "outlier_threshold": 0.3,
     "peak_merge_distance": 7,

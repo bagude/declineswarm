@@ -1,0 +1,37 @@
+{
+  "well_id": "SYN-16",
+  "regime": "R1",
+  "regime_name": "Permian tight oil",
+  "tier": "adversarial",
+  "description": "Permian, frac hit + refrac, adversarial noise",
+  "ground_truth": {
+    "qi_oil": 15282.522785845389,
+    "qi_gas": null,
+    "Di": 0.8179372900803308,
+    "b": 0.8170262854330308,
+    "d_min": 0.07038621622694374,
+    "gor": 4.906584545295231,
+    "wor": 1.2256170173014533
+  },
+  "noise_sigma": 0.15,
+  "events": [
+    {
+      "function": "apply_frac_hit",
+      "params": {
+        "month": 10,
+        "severity": 0.5,
+        "recovery_months": 8
+      }
+    },
+    {
+      "function": "apply_refrac",
+      "params": {
+        "month": 30,
+        "new_qi_multiplier": 0.6,
+        "new_Di": 0.75,
+        "new_b": 1.0
+      }
+    }
+  ],
+  "months": 84
+}

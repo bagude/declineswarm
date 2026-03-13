@@ -1,0 +1,27 @@
+{
+  "well_id": "SYN-13",
+  "regime": "R3",
+  "regime_name": "Shale gas Marcellus",
+  "tier": "hard",
+  "description": "Marcellus gas, liquid loading onset at month 20",
+  "ground_truth": {
+    "qi_oil": 1707.5562195822054,
+    "qi_gas": 193847.06223852962,
+    "Di": 0.6343695048968078,
+    "b": 0.6740928917664673,
+    "d_min": 0.05112140272526827,
+    "gor": 50.43118013084027,
+    "wor": 1.6162510203210925
+  },
+  "noise_sigma": 0.12,
+  "events": [
+    {
+      "function": "apply_liquid_loading",
+      "params": {
+        "start_month": 20,
+        "steepening_factor": 1.5
+      }
+    }
+  ],
+  "months": 84
+}

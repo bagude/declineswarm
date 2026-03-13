@@ -1,0 +1,19 @@
+{
+  "well_id": "SYN-07",
+  "regime": "R3",
+  "regime_name": "Shale gas Marcellus",
+  "tier": "medium",
+  "description": "Shale gas Marcellus, no events, gas-dominant well",
+  "ground_truth": {
+    "qi_oil": 1255.6251397945389,
+    "qi_gas": 190748.79121629064,
+    "Di": 0.6329728658439688,
+    "b": 0.5644473485248989,
+    "d_min": 0.05423093684536048,
+    "gor": 35.41746778122638,
+    "wor": 2.4049625179890097
+  },
+  "noise_sigma": 0.08,
+  "events": [],
+  "months": 72
+}

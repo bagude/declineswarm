@@ -1,0 +1,28 @@
+{
+  "well_id": "SYN-09",
+  "regime": "R2",
+  "regime_name": "Eagle Ford moderate",
+  "tier": "medium",
+  "description": "Eagle Ford, pipeline curtailment months 12-14",
+  "ground_truth": {
+    "qi_oil": 9849.595083675253,
+    "qi_gas": null,
+    "Di": 0.6032347446145081,
+    "b": 0.7492609706275807,
+    "d_min": 0.06274822322887383,
+    "gor": 2.892674319949821,
+    "wor": 2.9258403727793834
+  },
+  "noise_sigma": 0.08,
+  "events": [
+    {
+      "function": "apply_pipeline_curtailment",
+      "params": {
+        "start_month": 12,
+        "duration_months": 3,
+        "curtailment_fraction": 0.5
+      }
+    }
+  ],
+  "months": 72
+}

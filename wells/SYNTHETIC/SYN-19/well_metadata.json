@@ -1,0 +1,37 @@
+{
+  "well_id": "SYN-19",
+  "regime": "R6",
+  "regime_name": "Post-refrac",
+  "tier": "adversarial",
+  "description": "Post-refrac, refrac + frac hit, adversarial noise",
+  "ground_truth": {
+    "qi_oil": 21157.921028659784,
+    "qi_gas": null,
+    "Di": 0.7155915754350078,
+    "b": 1.1231227018935108,
+    "d_min": 0.06531236070836352,
+    "gor": 2.8688688840050416,
+    "wor": 1.3312995168435287
+  },
+  "noise_sigma": 0.15,
+  "events": [
+    {
+      "function": "apply_refrac",
+      "params": {
+        "month": 20,
+        "new_qi_multiplier": 0.7,
+        "new_Di": 0.7,
+        "new_b": 1.1
+      }
+    },
+    {
+      "function": "apply_frac_hit",
+      "params": {
+        "month": 35,
+        "severity": 0.35,
+        "recovery_months": 6
+      }
+    }
+  ],
+  "months": 84
+}

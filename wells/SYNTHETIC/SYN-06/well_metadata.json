@@ -1,0 +1,35 @@
+{
+  "well_id": "SYN-06",
+  "regime": "R1",
+  "regime_name": "Permian tight oil",
+  "tier": "medium",
+  "description": "Permian tight oil, shut-in + workover bump, moderate noise",
+  "ground_truth": {
+    "qi_oil": 11869.394817565064,
+    "qi_gas": null,
+    "Di": 0.7860372491980196,
+    "b": 0.9407385023311531,
+    "d_min": 0.07907341727179149,
+    "gor": 3.0497774596976357,
+    "wor": 1.4810385036386795
+  },
+  "noise_sigma": 0.08,
+  "events": [
+    {
+      "function": "apply_shut_in",
+      "params": {
+        "start_month": 10,
+        "duration_months": 2
+      }
+    },
+    {
+      "function": "apply_workover_bump",
+      "params": {
+        "month": 20,
+        "amplitude_fraction": 0.3,
+        "decay_months": 4
+      }
+    }
+  ],
+  "months": 72
+}

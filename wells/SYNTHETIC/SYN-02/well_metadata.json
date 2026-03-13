@@ -1,0 +1,19 @@
+{
+  "well_id": "SYN-02",
+  "regime": "R2",
+  "regime_name": "Eagle Ford moderate",
+  "tier": "easy",
+  "description": "Eagle Ford moderate, no events, clean signal",
+  "ground_truth": {
+    "qi_oil": 14250.645096581751,
+    "qi_gas": null,
+    "Di": 0.6892448645274105,
+    "b": 0.611565551801214,
+    "d_min": 0.05287866442790722,
+    "gor": 3.686587056471068,
+    "wor": 2.4823781791382356
+  },
+  "noise_sigma": 0.05,
+  "events": [],
+  "months": 72
+}

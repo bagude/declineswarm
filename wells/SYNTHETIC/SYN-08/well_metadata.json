@@ -1,0 +1,27 @@
+{
+  "well_id": "SYN-08",
+  "regime": "R4",
+  "regime_name": "Bakken mature",
+  "tier": "medium",
+  "description": "Bakken mature, ESP installation at month 15",
+  "ground_truth": {
+    "qi_oil": 20042.22922837068,
+    "qi_gas": null,
+    "Di": 0.5826485632856518,
+    "b": 1.2267535905371005,
+    "d_min": 0.08221009467892278,
+    "gor": 3.0451404395026076,
+    "wor": 1.1986959779221227
+  },
+  "noise_sigma": 0.08,
+  "events": [
+    {
+      "function": "apply_esp_installation",
+      "params": {
+        "month": 15,
+        "rate_jump_fraction": 0.4
+      }
+    }
+  ],
+  "months": 72
+}

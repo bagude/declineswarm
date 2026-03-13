@@ -1,6 +1,6 @@
 {
-  "version": 4,
-  "description": "b_initial=1.0 — optimizer converges to b=1.33 from b_initial=0.5, but R2_outsample=-7.76 suggests poor extrapolation. Starting b closer to fitted value may find better local minimum for holdout period.",
+  "version": 12,
+  "description": "peak_merge_distance=5 — early production has month 1 peak (8819), month 3 dip (2589), month 4 recovery (5964). Wider merge distance consolidates these as one peak region for better decline start detection.",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 6,

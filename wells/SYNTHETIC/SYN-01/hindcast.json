@@ -13,5 +13,40 @@
     "version": 4,
     "mape": 0.0373,
     "r2_outsample": -0.0446
+  },
+  {
+    "version": 5,
+    "mape": 0.0373,
+    "r2_outsample": -0.0446
+  },
+  {
+    "version": 6,
+    "mape": 0.0373,
+    "r2_outsample": -0.0445
+  },
+  {
+    "version": 7,
+    "mape": 0.0514,
+    "r2_outsample": -1.0352
+  },
+  {
+    "version": 8,
+    "mape": 0.0373,
+    "r2_outsample": -0.0446
+  },
+  {
+    "version": 9,
+    "mape": 0.0373,
+    "r2_outsample": -0.0446
+  },
+  {
+    "version": 10,
+    "mape": 0.0379,
+    "r2_outsample": 0.0055
+  },
+  {
+    "version": 11,
+    "mape": 0.0379,
+    "r2_outsample": 0.0055
   }
 ]

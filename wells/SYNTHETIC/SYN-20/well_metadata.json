@@ -1,0 +1,69 @@
+{
+  "well_id": "SYN-20",
+  "regime": "R2",
+  "regime_name": "Eagle Ford moderate",
+  "tier": "adversarial",
+  "description": "Eagle Ford, 5-event gauntlet, adversarial noise",
+  "ground_truth": {
+    "qi_oil": 11412.31138904776,
+    "qi_gas": null,
+    "Di": 0.6613383460294798,
+    "b": 0.7483462307938304,
+    "d_min": 0.06619485510990554,
+    "gor": 2.2838699163191687,
+    "wor": 2.232917093256889
+  },
+  "noise_sigma": 0.15,
+  "events": [
+    {
+      "function": "apply_pipeline_curtailment",
+      "params": {
+        "start_month": 5,
+        "duration_months": 4,
+        "curtailment_fraction": 0.6
+      }
+    },
+    {
+      "function": "apply_shut_in",
+      "params": {
+        "start_month": 15,
+        "duration_months": 2
+      }
+    },
+    {
+      "function": "apply_workover_bump",
+      "params": {
+        "month": 25,
+        "amplitude_fraction": 0.35,
+        "decay_months": 5
+      }
+    },
+    {
+      "function": "apply_frac_hit",
+      "params": {
+        "month": 40,
+        "severity": 0.4,
+        "recovery_months": 7
+      }
+    },
+    {
+      "function": "apply_allocation_noise",
+      "params": {
+        "months": [
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59
+        ],
+        "magnitude": 0.25
+      }
+    }
+  ],
+  "months": 84
+}

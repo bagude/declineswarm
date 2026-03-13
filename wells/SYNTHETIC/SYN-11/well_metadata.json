@@ -1,0 +1,28 @@
+{
+  "well_id": "SYN-11",
+  "regime": "R1",
+  "regime_name": "Permian tight oil",
+  "tier": "hard",
+  "description": "Permian tight oil, frac hit at month 14, high noise",
+  "ground_truth": {
+    "qi_oil": 14677.234866488849,
+    "qi_gas": null,
+    "Di": 0.7109045310020914,
+    "b": 1.1913419433483985,
+    "d_min": 0.0845132344234865,
+    "gor": 4.766892980665629,
+    "wor": 1.5171362205232297
+  },
+  "noise_sigma": 0.12,
+  "events": [
+    {
+      "function": "apply_frac_hit",
+      "params": {
+        "month": 14,
+        "severity": 0.4,
+        "recovery_months": 6
+      }
+    }
+  ],
+  "months": 84
+}
