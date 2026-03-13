@@ -1,8 +1,8 @@
 {
-  "version": 1,
-  "description": "Baseline -- global defaults",
+  "version": 7,
+  "description": "significance_threshold=0.30 -- lowers peak significance cutoff from 549 to 329 bbl, allowing later peaks (e.g. month 18 at 416 bbl) to qualify as most recent significant peak, shifting decline anchor away from month 0",
   "preprocessing": {
-    "significance_threshold": 0.5,
+    "significance_threshold": 0.30,
     "smoothing_window": 3,
     "outlier_window": 3,
     "outlier_threshold": 0.3,
