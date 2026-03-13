@@ -1,12 +1,12 @@
 {
-  "version": 8,
-  "description": "peak_merge_distance=6 — wider merge window might consolidate secondary peaks near the main peak differently, potentially shifting the anchor index. MAPE was 0.5757.",
+  "version": 1,
+  "description": "Baseline -- global defaults",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 3,
     "outlier_window": 3,
     "outlier_threshold": 0.3,
-    "peak_merge_distance": 6,
+    "peak_merge_distance": 3,
     "min_clean_months": 3
   },
   "fitting": {
