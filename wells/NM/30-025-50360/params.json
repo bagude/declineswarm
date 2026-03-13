@@ -1,12 +1,12 @@
 {
-  "version": 11,
-  "description": "peak_merge_distance=2 — smaller merge distance keeps initial peak (month 3) and Nov 2023 bump (month 11) as separate peaks, potentially shifting fit to post-bump decline",
+  "version": 1,
+  "description": "Baseline -- global defaults",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 3,
     "outlier_window": 3,
     "outlier_threshold": 0.3,
-    "peak_merge_distance": 2,
+    "peak_merge_distance": 3,
     "min_clean_months": 3
   },
   "fitting": {
@@ -15,7 +15,7 @@
     "b_initial": 0.5,
     "qi_guess_strategy": "first",
     "qi_multiplier_upper": 5.0,
-    "di_upper_bound": 5.0,
+    "di_upper_bound": 0.99,
     "b_upper_bound": 2.0
   },
   "state": "NM",
