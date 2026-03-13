@@ -1,12 +1,12 @@
 {
-  "version": 2,
-  "description": "random: smoothing_window=2",
+  "version": 3,
+  "description": "random: peak_merge_distance=7",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 2,
     "outlier_window": 3,
     "outlier_threshold": 0.3,
-    "peak_merge_distance": 3,
+    "peak_merge_distance": 7,
     "min_clean_months": 3
   },
   "fitting": {
