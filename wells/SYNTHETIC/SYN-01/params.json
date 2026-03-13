@@ -1,6 +1,6 @@
 {
-  "version": 3,
-  "description": "random: smoothing_window=6",
+  "version": 4,
+  "description": "b_initial=1.0 — optimizer converges to b=1.33 from b_initial=0.5, but R2_outsample=-7.76 suggests poor extrapolation. Starting b closer to fitted value may find better local minimum for holdout period.",
   "preprocessing": {
     "significance_threshold": 0.5,
     "smoothing_window": 6,
@@ -12,7 +12,7 @@
   "fitting": {
     "d_min": 0.05,
     "di_initial": 0.5,
-    "b_initial": 0.5,
+    "b_initial": 1.0,
     "qi_guess_strategy": "first",
     "qi_multiplier_upper": 5.0,
     "di_upper_bound": 0.99,
