@@ -1,8 +1,8 @@
 {
-  "version": 1,
-  "description": "Baseline -- global defaults",
+  "version": 2,
+  "description": "random: significance_threshold=0.6922",
   "preprocessing": {
-    "significance_threshold": 0.5,
+    "significance_threshold": 0.6922,
     "smoothing_window": 3,
     "outlier_window": 3,
     "outlier_threshold": 0.3,
