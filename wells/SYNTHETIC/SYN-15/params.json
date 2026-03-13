@@ -1,9 +1,9 @@
 {
-  "version": 1,
-  "description": "Baseline -- global defaults",
+  "version": 2,
+  "description": "random: smoothing_window=6",
   "preprocessing": {
     "significance_threshold": 0.5,
-    "smoothing_window": 3,
+    "smoothing_window": 6,
     "outlier_window": 3,
     "outlier_threshold": 0.3,
     "peak_merge_distance": 3,
