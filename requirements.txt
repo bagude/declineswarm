@@ -2,3 +2,5 @@ petbox-dca
 scipy
 numpy
 matplotlib
+pandas
+pytest
