@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Agent Loop — an animated essay</title>
+<style>
+  :root{
+    --bg:#0b0d12; --panel:#11141c; --ink:#e8e6df;
+    --blue:#58c4dd; --teal:#39b8a0; --amber:#f0c674; --purple:#b294bb; --rose:#e06c75;
+    --muted:#7d8494;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:Georgia,'Times New Roman',serif;
+       display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:14px}
+  h1{font-size:clamp(17px,2.6vw,24px);font-weight:400;letter-spacing:.5px;margin:6px 0 2px}
+  h1 em{color:var(--blue);font-style:italic}
+  .sub{color:var(--muted);font-size:12.5px;margin-bottom:10px;font-style:italic}
+  .stage{width:min(960px,100%);aspect-ratio:16/9;background:#000;border-radius:8px;
+         box-shadow:0 8px 40px rgba(0,0,0,.6);position:relative;overflow:hidden}
+  canvas{width:100%;height:100%;display:block}
+  .controls{width:min(960px,100%);display:flex;align-items:center;gap:10px;margin-top:10px}
+  button{background:var(--panel);color:var(--ink);border:1px solid #262b38;border-radius:6px;
+         padding:7px 14px;font-family:inherit;font-size:13px;cursor:pointer}
+  button:hover{border-color:var(--blue);color:var(--blue)}
+  .bar{flex:1;height:8px;background:var(--panel);border-radius:4px;cursor:pointer;position:relative}
+  .fill{height:100%;background:var(--blue);border-radius:4px;width:0%}
+  .time{font-size:12px;color:var(--muted);font-family:Menlo,monospace;min-width:86px;text-align:right}
+  .chapters{width:min(960px,100%);display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .chip{font-size:11px;color:var(--muted);border:1px solid #262b38;border-radius:12px;
+        padding:3px 10px;cursor:pointer;font-family:Menlo,monospace}
+  .chip:hover{color:var(--ink);border-color:var(--muted)}
+  .chip.on{color:var(--blue);border-color:var(--blue)}
+</style>
+</head>
+<body>
+  <h1>The Agent Loop <em>— or, how thirty lines become a system</em></h1>
+  <div class="sub">a visual essay in the spirit of 3Blue1Brown · press play</div>
+
+  <div class="stage"><canvas id="cv" width="1920" height="1080"></canvas></div>
+
+  <div class="controls">
+    <button id="play">▶ Play</button>
+    <button id="restart">↺</button>
+    <div class="bar" id="bar"><div class="fill" id="fill"></div></div>
+    <div class="time" id="time">0:00 / 2:30</div>
+  </div>
+  <div class="chapters" id="chapters"></div>
+
+<script>
+(()=>{
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+const W=1920,H=1080,S=2; // internal scale (design coords 960x540)
+const COL={bg:'#000000',ink:'#e8e6df',muted:'#7d8494',
+  blue:'#58c4dd',teal:'#39b8a0',amber:'#f0c674',purple:'#b294bb',rose:'#e06c75',
+  dim:'#2a2f3d',green:'#83c167'};
+const DUR=150; // seconds
+let t=0,playing=false,last=null;
+
+// ===================== AUDIO LAYER =====================
+// Narration = one clip per caption, played at that caption's start time.
+// SFX = subtle cinematic cues at animation events. Ambient = a looping bed.
+// Audio files come from generate_audio.py; this degrades silently if absent.
+const MOVIE_ID='m1';
+const NAR_TIMES=[0,6,12,18,24,31,38,46,54,60,66,72,79,87,95,101,108,115,122,130,138,144];
+const SFX_CUES=[[3,'boot',0.4],[12,'whoosh',0.3],[24,'whoosh',0.3],[38,'whoosh',0.3],[39,'blip',0.35],[58,'blip',0.35],[76,'error',0.4],[88.5,'success',0.4],[101,'whoosh',0.3],[138,'whoosh',0.3]];
+const AUDIO=(()=>{
+  const base='audio/'+MOVIE_ID+'/';
+  const nar=NAR_TIMES.map((_,i)=>{const a=new Audio(base+'nar_'+String(i).padStart(2,'0')+'.mp3');a.preload='auto';return a;});
+  const amb=new Audio('audio/sfx/ambient_drone.mp3');amb.loop=true;amb.volume=0.16;
+  let prev=-1,enabled=true,unlocked=false,cur=null;
+  const stopNar=()=>{nar.forEach(a=>{if(!a.paused)a.pause();a.currentTime=0;});cur=null;};
+  const fireNar=i=>{if(!enabled)return;if(cur&&cur!==nar[i]){cur.pause();cur.currentTime=0;}const a=nar[i];try{a.currentTime=0;a.play().catch(()=>{});}catch(e){}cur=a;};
+  const fireSfx=(n,g)=>{if(!enabled)return;const a=new Audio('audio/sfx/'+n+'.mp3');a.volume=g;a.play().catch(()=>{});};
+  return {
+    onPlay(){unlocked=true;if(enabled)amb.play().catch(()=>{});},
+    onPause(){amb.pause();if(cur&&!cur.paused)cur.pause();},
+    seek(){stopNar();prev=-1;},
+    tick(now,isPlaying){
+      if(!isPlaying)return;
+      if(prev<0){prev=now;return;}
+      if(now<prev-0.05||now-prev>0.6){stopNar();prev=now;if(enabled&&amb.paused)amb.play().catch(()=>{});return;}
+      NAR_TIMES.forEach((tt,i)=>{if(prev<tt&&now>=tt)fireNar(i);});
+      SFX_CUES.forEach(c=>{if(prev<c[0]&&now>=c[0])fireSfx(c[1],c[2]);});
+      prev=now;
+    },
+    toggle(){enabled=!enabled;if(!enabled){stopNar();amb.pause();}else if(unlocked)amb.play().catch(()=>{});return enabled;}
+  };
+})();
+// =======================================================
+
+// ---------- easing & helpers ----------
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const seg=(t,a,b)=>clamp((t-a)/(b-a),0,1);
+const ease=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const easeOut=x=>1-Math.pow(1-x,3);
+function lerp(a,b,x){return a+(b-a)*x}
+
+function line(x1,y1,x2,y2,color,w,p=1,dash=null){
+  if(p<=0)return;
+  ctx.save();ctx.strokeStyle=color;ctx.lineWidth=w*S;ctx.lineCap='round';
+  if(dash)ctx.setLineDash(dash.map(d=>d*S));
+  ctx.beginPath();ctx.moveTo(x1*S,y1*S);
+  ctx.lineTo(lerp(x1,x2,p)*S,lerp(y1,y2,p)*S);ctx.stroke();ctx.restore();
+}
+function poly(pts,color,w,p=1,dash=null){
+  if(p<=0)return;
+  const lens=[];let total=0;
+  for(let i=1;i<pts.length;i++){const l=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);lens.push(l);total+=l}
+  let remain=total*p;
+  ctx.save();ctx.strokeStyle=color;ctx.lineWidth=w*S;ctx.lineCap='round';ctx.lineJoin='round';
+  if(dash)ctx.setLineDash(dash.map(d=>d*S));
+  ctx.beginPath();ctx.moveTo(pts[0][0]*S,pts[0][1]*S);
+  for(let i=1;i<pts.length;i++){
+    if(remain>=lens[i-1]){ctx.lineTo(pts[i][0]*S,pts[i][1]*S);remain-=lens[i-1]}
+    else{const f=remain/lens[i-1];
+      ctx.lineTo(lerp(pts[i-1][0],pts[i][0],f)*S,lerp(pts[i-1][1],pts[i][1],f)*S);remain=0;break}
+  }
+  ctx.stroke();ctx.restore();
+}
+function pointOn(pts,p){
+  const lens=[];let total=0;
+  for(let i=1;i<pts.length;i++){const l=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);lens.push(l);total+=l}
+  let d=total*clamp(p,0,1);
+  for(let i=1;i<pts.length;i++){
+    if(d<=lens[i-1]){const f=d/lens[i-1];
+      return[lerp(pts[i-1][0],pts[i][0],f),lerp(pts[i-1][1],pts[i][1],f)]}
+    d-=lens[i-1]}
+  return pts[pts.length-1];
+}
+function arrowHead(x,y,ang,color,size=7,alpha=1){
+  ctx.save();ctx.globalAlpha=alpha;ctx.fillStyle=color;
+  ctx.translate(x*S,y*S);ctx.rotate(ang);
+  ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(-size*S,-size*.55*S);ctx.lineTo(-size*S,size*.55*S);
+  ctx.closePath();ctx.fill();ctx.restore();
+}
+function txt(str,x,y,size,color,align='center',font='Georgia',alpha=1,style=''){
+  ctx.save();ctx.globalAlpha=alpha;ctx.fillStyle=color;
+  ctx.font=`${style} ${size*S}px ${font}`;ctx.textAlign=align;ctx.textBaseline='middle';
+  ctx.fillText(str,x*S,y*S);ctx.restore();
+}
+function writeOn(str,x,y,size,color,p,align='center',font='Georgia',style=''){
+  const n=Math.round(str.length*clamp(p,0,1));
+  txt(str.slice(0,n),x,y,size,color,align,font,1,style);
+}
+function rrect(x,y,w,h,r,fill,stroke,lw=1.6,alpha=1,dash=null){
+  ctx.save();ctx.globalAlpha=alpha;
+  ctx.beginPath();ctx.roundRect(x*S,y*S,w*S,h*S,r*S);
+  if(fill){ctx.fillStyle=fill;ctx.fill()}
+  if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=lw*S;
+    if(dash)ctx.setLineDash(dash.map(d=>d*S));ctx.stroke()}
+  ctx.restore();
+}
+function glowDot(x,y,color,r=6,alpha=1){
+  ctx.save();ctx.globalAlpha=alpha;
+  const g=ctx.createRadialGradient(x*S,y*S,0,x*S,y*S,r*3*S);
+  g.addColorStop(0,color);g.addColorStop(1,'transparent');
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(x*S,y*S,r*3*S,0,7);ctx.fill();
+  ctx.fillStyle=color;ctx.beginPath();ctx.arc(x*S,y*S,r*S,0,7);ctx.fill();ctx.restore();
+}
+function circleNode(x,y,r,color,label,alpha=1,pulse=0){
+  ctx.save();ctx.globalAlpha=alpha;
+  if(pulse>0){ctx.strokeStyle=color;ctx.globalAlpha=alpha*(1-pulse)*.6;
+    ctx.lineWidth=2*S;ctx.beginPath();ctx.arc(x*S,y*S,(r+pulse*18)*S,0,7);ctx.stroke();
+    ctx.globalAlpha=alpha}
+  ctx.fillStyle='#0d1a20';ctx.strokeStyle=color;ctx.lineWidth=2*S;
+  ctx.beginPath();ctx.arc(x*S,y*S,r*S,0,7);ctx.fill();ctx.stroke();ctx.restore();
+  txt(label,x,y,15,color,'center','Georgia',alpha,'italic');
+}
+function diamond(x,y,s,color,alpha=1){
+  ctx.save();ctx.globalAlpha=alpha;ctx.fillStyle='#161309';ctx.strokeStyle=color;ctx.lineWidth=2*S;
+  ctx.beginPath();ctx.moveTo(x*S,(y-s)*S);ctx.lineTo((x+s)*S,y*S);
+  ctx.lineTo(x*S,(y+s)*S);ctx.lineTo((x-s)*S,y*S);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore();
+}
+
+// ---------- layout ----------
+const MSG={x:60,y:120,w:230,h:30,gap:8};             // message column
+const LLM={x:470,y:250,r:50};
+const DEC={x:672,y:250,s:44};
+const TOOL={x:672,y:420,w:150,h:48};
+const END={x:855,y:130,w:100,h:40};
+const msgOut=[MSG.x+MSG.w,250], llmIn=[LLM.x-LLM.r,250];
+const E1=[msgOut,llmIn];
+const E2=[[LLM.x+LLM.r,250],[DEC.x-DEC.s,250]];
+const E3=[[DEC.x+ (DEC.s*0.55),250- DEC.s*0.55],[790,168],[END.x-END.w/2,END.y+8]];
+const E4=[[DEC.x,250+DEC.s],[DEC.x,TOOL.y-TOOL.h/2]];
+const E5=[[TOOL.x-TOOL.w/2,TOOL.y],[MSG.x+MSG.w/2,TOOL.y],[MSG.x+MSG.w/2,TOOL.y-24]];
+
+// ---------- messages state (declarative per time) ----------
+// each: [appearTime, label, color]
+const CELLS=[
+  [40.5,'user: “weather in Tokyo?”',COL.ink],
+  [49.0,'asst: call get_weather(Tokyo)',COL.amber],
+  [53.5,'tool: “72°F and sunny”',COL.green],
+  [66.0,'asst: “It’s 72°F in Tokyo!”',COL.blue],
+  [78.0,'user: “weather in Atlantis?”',COL.ink],
+  [82.5,'asst: call get_weather(Atlantis)',COL.amber],
+  [86.5,'tool: Error: city not found',COL.rose],
+  [95.0,'asst: “No data — fictional city”',COL.blue],
+];
+function drawCells(now,extraAlpha=1,compact=0){
+  let vis=CELLS.filter(c=>now>=c[0]);
+  // compaction: merge all but last 2 into a summary cell
+  if(compact>0&&vis.length>3){
+    const keep=vis.slice(-2);
+    const y0=MSG.y;
+    const sumA=compact;
+    rrect(MSG.x,y0,MSG.w,MSG.h,6,'#1a1214',COL.rose,1.6,sumA*extraAlpha,[4,3]);
+    txt('summary: (older turns, compressed)',MSG.x+MSG.w/2,y0+MSG.h/2,11.5,COL.rose,'center','Menlo, monospace',sumA*extraAlpha);
+    keep.forEach((c,i)=>{
+      const y=y0+(i+1)*(MSG.h+MSG.gap);
+      rrect(MSG.x,y,MSG.w,MSG.h,6,'#10131b','#3a4152',1.4,extraAlpha);
+      txt(c[1],MSG.x+MSG.w/2,y+MSG.h/2,11.5,c[2],'center','Menlo, monospace',extraAlpha);
+    });
+    // faded originals sliding into summary
+    return;
+  }
+  vis.forEach((c,i)=>{
+    const born=seg(now,c[0],c[0]+0.6);
+    const y=MSG.y+i*(MSG.h+MSG.gap);
+    rrect(MSG.x,y,MSG.w,MSG.h,6,'#10131b','#3a4152',1.4,extraAlpha*born);
+    txt(c[1],MSG.x+MSG.w/2,y+MSG.h/2,11.5,c[2],'center','Menlo, monospace',extraAlpha*born);
+  });
+}
+
+// ---------- diagram ----------
+function drawDiagram(now,o={}){
+  const a=o.alpha??1;
+  const laneS=o.laneState??0, laneE=o.laneExec??0, laneR=o.laneRoute??0;
+  const laneC=o.laneCtrl??0, laneM=o.laneMem??0;
+
+  // column frame
+  const colColor=laneS>0?COL.blue:'#3a4152';
+  rrect(MSG.x-14,MSG.y-38,MSG.w+28,340,10,null,colColor,laneS>0?2.2:1.2,a*(0.55+0.45*laneS));
+  txt('messages[]',MSG.x+MSG.w/2,MSG.y-20,14,laneS>0?COL.blue:COL.muted,'center','Menlo, monospace',a,'italic');
+  if(laneS>0)txt('STATE',MSG.x+MSG.w/2,MSG.y+318,12,COL.blue,'center','Menlo, monospace',a*laneS,'bold');
+
+  // edges
+  const eCol=laneE>0?COL.teal:'#5a6172';
+  line(...E1[0],...E1[1],eCol,laneE>0?2.6:1.8,1,null);
+  arrowHead(llmIn[0],250,0,eCol,7,a);
+  line(...E2[0],...E2[1],eCol,laneE>0?2.6:1.8,1,null);
+  arrowHead(DEC.x-DEC.s,250,0,eCol,7,a);
+  poly(E3,laneR>0?COL.amber:'#5a6172',laneR>0?2.6:1.8,1);
+  arrowHead(END.x-END.w/2,END.y+8,-0.5,laneR>0?COL.amber:'#5a6172',7,a);
+  poly(E4,eCol,laneE>0?2.6:1.8,1);
+  arrowHead(DEC.x,TOOL.y-TOOL.h/2,Math.PI/2,eCol,7,a);
+  poly(E5,eCol,laneE>0?2.6:1.8,1);
+  arrowHead(MSG.x+MSG.w/2,TOOL.y-24,-Math.PI/2,eCol,7,a);
+  if(laneE>0)txt('EXECUTION — the cycle itself',430,470,12,COL.teal,'center','Menlo, monospace',a*laneE,'bold');
+
+  // nodes
+  circleNode(LLM.x,LLM.y,LLM.r,COL.blue,'LLM',a,o.llmPulse??0);
+  diamond(DEC.x,DEC.y,DEC.s,laneR>0?COL.amber:'#8a8460',a);
+  txt('stop_',DEC.x,DEC.y-8,11,laneR>0?COL.amber:COL.muted,'center','Menlo, monospace',a);
+  txt('reason?',DEC.x,DEC.y+8,11,laneR>0?COL.amber:COL.muted,'center','Menlo, monospace',a);
+  rrect(TOOL.x-TOOL.w/2,TOOL.y-TOOL.h/2,TOOL.w,TOOL.h,8,'#0f1610',COL.green,1.8,a);
+  txt('run tool',TOOL.x,TOOL.y,14,COL.green,'center','Menlo, monospace',a);
+  rrect(END.x-END.w/2,END.y-END.h/2,END.w,END.h,8,'#141018','#9aa0ae',1.6,a);
+  txt('END · reply',END.x,END.y,13,'#c9cdd6','center','Menlo, monospace',a);
+
+  // edge labels
+  txt('tool_use ↓',DEC.x+58,330,11,laneR>0?COL.amber:COL.muted,'left','Menlo, monospace',a*.9,'italic');
+  txt('end_turn ↗',748,182,11,laneR>0?COL.amber:COL.muted,'left','Menlo, monospace',a*.9,'italic');
+  if(laneR>0)txt('ROUTING — output picks the edge',DEC.x,152,12,COL.amber,'center','Menlo, monospace',a*laneR,'bold');
+
+  // CONTROL: pause gate on E4
+  if(laneC>0){
+    const gy=(E4[0][1]+E4[1][1])/2;
+    rrect(DEC.x-46,gy-14,92,28,6,'#151020',COL.purple,2,a*laneC,[5,4]);
+    txt('⏸ approve?',DEC.x,gy,12,COL.purple,'center','Menlo, monospace',a*laneC);
+    txt('CONTROL — pause · persist · resume',DEC.x+150,gy,11.5,COL.purple,'left','Menlo, monospace',a*laneC,'bold');
+  }
+  // MEMORY bracket on column
+  if(laneM>0){
+    rrect(MSG.x-26,MSG.y-38,12,340,4,null,COL.rose,2,a*laneM,[5,4]);
+    txt('MEMORY',MSG.x-46,MSG.y+130,12,COL.rose,'center','Menlo, monospace',a*laneM,'bold');
+    txt('finite window →',MSG.x-46,MSG.y+150,10,COL.rose,'center','Menlo, monospace',a*laneM*.8,'italic');
+    txt('compact + store',MSG.x-46,MSG.y+164,10,COL.rose,'center','Menlo, monospace',a*laneM*.8,'italic');
+  }
+}
+
+// one traversal of the loop; phase 0..1; branch 'tool' or 'end'
+function cyclePulse(p,branch,color){
+  if(p<=0||p>=1)return;
+  let pt=null,segp;
+  if(p<0.22){segp=p/0.22; pt=pointOn(E1,seg(segp,0,1))}
+  else if(p<0.34){ // inside LLM: orbit
+    const th=(p-0.22)/0.12*Math.PI*2;
+    pt=[LLM.x+Math.cos(th)*LLM.r*0.62,LLM.y+Math.sin(th)*LLM.r*0.62];
+  }
+  else if(p<0.48){segp=(p-0.34)/0.14; pt=pointOn(E2,segp)}
+  else if(branch==='end'){segp=(p-0.48)/0.52; pt=pointOn(E3,seg(segp,0,1))}
+  else{
+    if(p<0.62){segp=(p-0.48)/0.14; pt=pointOn(E4,segp)}
+    else if(p<0.72){pt=[TOOL.x,TOOL.y]}
+    else{segp=(p-0.72)/0.28; pt=pointOn(E5,segp)}
+  }
+  if(pt)glowDot(pt[0],pt[1],color,5.5);
+}
+
+// cycle counter badge
+function counter(n,alpha=1){
+  rrect(830,26,104,34,8,'#0d1017','#3a4152',1.4,alpha);
+  txt('cycle '+n,882,43,15,COL.blue,'center','Menlo, monospace',alpha,'bold');
+}
+
+// ---------- captions ----------
+const CAPS=[
+ [0,6,'Every AI agent — every one — begins with a single idea.'],
+ [6,12,'An LLM call is just a function. Text goes in. Text comes out.'],
+ [12,18,'But what if the text coming out could ask for something?'],
+ [18,24,'“I’d like to call get_weather.” The model can’t run it. We can.'],
+ [24,31,'So we arrange the pieces: a list of messages, the model, a decision, a tool.'],
+ [31,38,'And we connect the tool’s output back to the messages. A cycle. A loop.'],
+ [38,46,'Watch it run. A question enters the state, and flows to the model. — cycle one'],
+ [46,54,'The model answers with a request. stop_reason routes it down to the tool.'],
+ [54,60,'The result isn’t shown to anyone. It’s appended — it becomes state.'],
+ [60,66,'Around again. — cycle two. Now the model sees its own request and the result.'],
+ [66,72,'Nothing left to ask for. stop_reason says end_turn. The loop exits with an answer.'],
+ [72,79,'Now a harder question. — cycle three. A city that doesn’t exist.'],
+ [79,87,'The tool fails. But look — the error doesn’t crash anything. It’s appended too.'],
+ [87,95,'— cycle four. The model reads its own failure... and recovers gracefully.'],
+ [95,101,'Errors are not exceptions here. Errors are just edges.'],
+ [101,108,'Now, look again at what we built — semantically this time.'],
+ [108,115,'The list is STATE: the only truth the system carries. The cycle is EXECUTION.'],
+ [115,122,'The decision and the registry are ROUTING: the model’s output picks the edge.'],
+ [122,130,'Two lanes are still missing. CONTROL: the power to pause, persist, and resume...'],
+ [130,138,'...and MEMORY: the window is finite, so old turns compress, and knowledge moves out.'],
+ [138,144,'Five primitives. Watch them all run at once — cycles five, six, seven...'],
+ [144,150,'Everything else — LangGraph, Claude Code, the harness — is composition.'],
+];
+function drawCaption(now){
+  const c=CAPS.find(c=>now>=c[0]&&now<c[1]);
+  if(!c)return;
+  const fadeIn=seg(now,c[0],c[0]+0.5),fadeOut=1-seg(now,c[1]-0.5,c[1]);
+  const a=Math.min(fadeIn,fadeOut);
+  ctx.save();ctx.globalAlpha=a*0.85;
+  ctx.fillStyle='#000';ctx.fillRect(0,500*S,960*S,40*S);ctx.restore();
+  txt(c[2],480,520,16,COL.ink,'center','Georgia',a,'italic');
+}
+
+// ---------- scenes ----------
+function scene(now){
+  ctx.fillStyle=COL.bg;ctx.fillRect(0,0,W,H);
+
+  // ---- S0: title + function idea (0-12) ----
+  if(now<12){
+    const a=1-seg(now,10.5,12);
+    ctx.save();ctx.globalAlpha=a;
+    writeOn('The Agent Loop',480,90,34,COL.ink,seg(now,0.3,2.2));
+    txt('from one function to a living system',480,124,15,COL.muted,'center','Georgia',seg(now,1.5,3)* a,'italic');
+    // function box
+    const p=seg(now,3,5.5);
+    if(p>0){
+      rrect(400,220,160,90,12,'#0d1a20',COL.blue,2,p*a);
+      txt('LLM',480,265,22,COL.blue,'center','Georgia',p*a,'italic');
+      const p2=ease(seg(now,5,7));
+      line(250,265,395,265,COL.ink,2,p2); arrowHead(250+145*p2,265,0,COL.ink,7,a*p2);
+      txt('“text in”',250,240,14,COL.muted,'left','Georgia',p2*a,'italic');
+      const p3=ease(seg(now,6,8));
+      line(565,265,710,265,COL.ink,2,p3); if(p3>0)arrowHead(565+145*p3,265,0,COL.ink,7,a*p3);
+      txt('“text out”',710,240,14,COL.muted,'right','Georgia',p3*a,'italic');
+      // the output becomes a request
+      const p4=seg(now,12,12); void p4;
+      const pr=seg(now,8.5,10.5);
+      if(pr>0){
+        rrect(620,300,240,34,8,'#161309',COL.amber,1.8,pr*a);
+        txt('{"tool":"get_weather"}',740,317,13,COL.amber,'center','Menlo, monospace',pr*a);
+      }
+    }
+    ctx.restore();
+  }
+
+  // ---- S1: build the diagram (12-38) ----
+  if(now>=12&&now<38){
+    const a=seg(now,12,13.5);
+    // pieces appear one by one
+    const pCol=ease(seg(now,24,26));
+    const pLLM=ease(seg(now,25.5,27));
+    const pDec=ease(seg(now,27,28.5));
+    const pTool=ease(seg(now,28.5,30));
+    const pEnd=ease(seg(now,29.5,31));
+    const pE12=ease(seg(now,31,33));
+    const pE34=ease(seg(now,32.5,34.5));
+    const pE5=ease(seg(now,34,36.5));
+
+    if(now<24){ // linger on the request idea
+      rrect(400,220,160,90,12,'#0d1a20',COL.blue,2,a);
+      txt('LLM',480,265,22,COL.blue,'center','Georgia',a,'italic');
+      rrect(620,300,240,34,8,'#161309',COL.amber,1.8,a);
+      txt('{"tool":"get_weather"}',740,317,13,COL.amber,'center','Menlo, monospace',a);
+      const pw=seg(now,14,17);
+      writeOn('The model never runs anything.',480,120,20,COL.ink,pw);
+      writeOn('Running it is our job — and that changes the shape of everything.',480,150,15,COL.muted,seg(now,17,21));
+      const px=seg(now,21,23.5);
+      if(px>0){ctx.save();ctx.globalAlpha=1-px;ctx.restore()}
+    } else {
+      // assemble
+      if(pCol>0){rrect(MSG.x-14,MSG.y-38,MSG.w+28,340,10,null,'#3a4152',1.2,pCol);
+        txt('messages[]',MSG.x+MSG.w/2,MSG.y-20,14,COL.muted,'center','Menlo, monospace',pCol,'italic')}
+      if(pLLM>0)circleNode(LLM.x,LLM.y,LLM.r,COL.blue,'LLM',pLLM);
+      if(pDec>0){diamond(DEC.x,DEC.y,DEC.s,'#8a8460',pDec);
+        txt('stop_',DEC.x,DEC.y-8,11,COL.muted,'center','Menlo, monospace',pDec);
+        txt('reason?',DEC.x,DEC.y+8,11,COL.muted,'center','Menlo, monospace',pDec)}
+      if(pTool>0){rrect(TOOL.x-TOOL.w/2,TOOL.y-TOOL.h/2,TOOL.w,TOOL.h,8,'#0f1610',COL.green,1.8,pTool);
+        txt('run tool',TOOL.x,TOOL.y,14,COL.green,'center','Menlo, monospace',pTool)}
+      if(pEnd>0){rrect(END.x-END.w/2,END.y-END.h/2,END.w,END.h,8,'#141018','#9aa0ae',1.6,pEnd);
+        txt('END · reply',END.x,END.y,13,'#c9cdd6','center','Menlo, monospace',pEnd)}
+      line(...E1[0],...E1[1],'#5a6172',1.8,pE12);
+      if(pE12>=1)arrowHead(llmIn[0],250,0,'#5a6172',7);
+      line(...E2[0],...E2[1],'#5a6172',1.8,pE12);
+      if(pE12>=1)arrowHead(DEC.x-DEC.s,250,0,'#5a6172',7);
+      poly(E3,'#5a6172',1.8,pE34);
+      poly(E4,'#5a6172',1.8,pE34);
+      if(pE34>=1){arrowHead(END.x-END.w/2,END.y+8,-0.5,'#5a6172',7);arrowHead(DEC.x,TOOL.y-TOOL.h/2,Math.PI/2,'#5a6172',7)}
+      poly(E5,'#5a6172',1.8,pE5,[6,5]);
+      if(pE5>=1)arrowHead(MSG.x+MSG.w/2,TOOL.y-24,-Math.PI/2,'#5a6172',7);
+      if(pE5>0.9)txt('← the cycle: results become input',430,455,13,COL.teal,'center','Georgia',seg(now,36,38),'italic');
+      txt('while True:',480,60,20,COL.ink,'center','Menlo, monospace',seg(now,24.5,26.5));
+    }
+  }
+
+  // ---- S2-S4: four runs (38-101) ----
+  if(now>=38&&now<101){
+    const pulseLLM = (now>41&&now<45)||(now>61&&now<64)||(now>79&&now<83)||(now>88&&now<93) ? (Math.sin(now*6)+1)/4 : 0;
+    drawDiagram(now,{llmPulse:pulseLLM});
+    drawCells(now);
+    // cycle 1: 39-56 tool branch
+    if(now>=39&&now<56){counter(1);cyclePulse(seg(now,39,55.5),'tool',COL.blue)}
+    // cycle 2: 58-72 end branch
+    if(now>=58&&now<72){counter(2);cyclePulse(seg(now,58,70),'end',COL.blue)}
+    // cycle 3: 76-88 tool branch (error)
+    if(now>=76&&now<88.5){counter(3);cyclePulse(seg(now,76,88),'tool',COL.rose)}
+    // cycle 4: 88.5-100 end branch (recovery)
+    if(now>=88.5&&now<101){counter(4);cyclePulse(seg(now,88.5,99),'end',COL.green)}
+    if(now>95&&now<101)txt('errors are just edges',480,60,18,COL.rose,'center','Georgia',seg(now,95.5,97.5),'italic');
+  }
+
+  // ---- S5: semantics — lanes light up (101-138) ----
+  if(now>=101&&now<138){
+    const lS=ease(seg(now,106,109));
+    const lE=ease(seg(now,110,113));
+    const lR=ease(seg(now,115,118));
+    const lC=ease(seg(now,122,125));
+    const lM=ease(seg(now,130,133));
+    drawDiagram(now,{laneState:lS,laneExec:lE,laneRoute:lR,laneCtrl:lC,laneMem:lM});
+    const compact=ease(seg(now,132,135));
+    drawCells(now,1,compact);
+    txt('the five primitives',480,60,20,COL.ink,'center','Georgia',seg(now,101.5,103.5),'italic');
+  }
+
+  // ---- S6: montage — continuous cycles (138-150) ----
+  if(now>=138){
+    drawDiagram(now,{laneState:1,laneExec:1,laneRoute:1,laneCtrl:1,laneMem:1});
+    drawCells(now,1,1);
+    const local=(now-138)%4;             // a cycle every 4s
+    const n=5+Math.floor((now-138)/4);
+    counter(n);
+    const branch=(n%2===0)?'end':'tool';
+    cyclePulse(local/4,branch,COL.blue);
+    const a2=seg(now,144,146.5);
+    if(a2>0){
+      ctx.save();ctx.globalAlpha=a2*0.88;ctx.fillStyle='#000';ctx.fillRect(180*S,205*S,600*S,110*S);ctx.restore();
+      writeOn('Everything else is composition.',480,245,26,COL.ink,seg(now,144.5,147));
+      txt('— state · execution · routing · control · memory —',480,285,13,COL.muted,'center','Menlo, monospace',seg(now,147,149),'italic');
+    }
+  }
+
+  drawCaption(now);
+}
+
+// ---------- playback ----------
+const playBtn=document.getElementById('play'),bar=document.getElementById('bar'),
+      fill=document.getElementById('fill'),timeEl=document.getElementById('time');
+function fmt(s){s=Math.floor(s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+function frame(ts){
+  if(playing){
+    if(last!=null)t+=(ts-last)/1000;
+    last=ts;
+    if(t>=DUR){t=DUR;playing=false;playBtn.textContent='▶ Replay';last=null;AUDIO.onPause()}
+  }
+  scene(t);
+  AUDIO.tick(t,playing);
+  fill.style.width=(t/DUR*100)+'%';
+  timeEl.textContent=fmt(t)+' / '+fmt(DUR);
+  updateChips();
+  requestAnimationFrame(frame);
+}
+playBtn.onclick=()=>{
+  if(t>=DUR)t=0;
+  playing=!playing;last=null;
+  playBtn.textContent=playing?'❚❚ Pause':'▶ Play';
+  if(playing)AUDIO.onPlay();else AUDIO.onPause();
+};
+document.getElementById('restart').onclick=()=>{t=0;last=null;AUDIO.seek();scene(0)};
+bar.onclick=e=>{
+  const r=bar.getBoundingClientRect();
+  t=clamp((e.clientX-r.left)/r.width,0,1)*DUR;last=null;AUDIO.seek();
+};
+// chapters
+const CH=[[0,'intuition'],[24,'build the loop'],[38,'cycle 1–2'],[72,'cycle 3–4 · errors'],[101,'the primitives'],[138,'composition']];
+const chWrap=document.getElementById('chapters');
+CH.forEach(([tt,name])=>{
+  const b=document.createElement('div');b.className='chip';b.textContent=name;
+  b.onclick=()=>{t=tt;last=null;if(!playing){playing=true;playBtn.textContent='❚❚ Pause'}};
+  b.dataset.t=tt;chWrap.appendChild(b);
+});
+function updateChips(){
+  const chips=[...chWrap.children];
+  chips.forEach((c,i)=>{
+    const start=+c.dataset.t,end=i<chips.length-1?+chips[i+1].dataset.t:DUR;
+    c.classList.toggle('on',t>=start&&t<end);
+  });
+}
+const muteBtn=document.createElement('button');muteBtn.textContent='🔊';muteBtn.title='Mute / unmute audio';
+document.querySelector('.controls').appendChild(muteBtn);
+muteBtn.onclick=()=>{muteBtn.textContent=AUDIO.toggle()?'🔊':'🔇';};
+scene(0);
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

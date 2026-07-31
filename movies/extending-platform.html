@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Extending the Platform — from intuition to a prototype anyone can run</title>
+<style>
+  :root{
+    --bg:#0b0d12; --panel:#11141c; --ink:#e8e6df;
+    --blue:#58c4dd; --teal:#39b8a0; --amber:#f0c674; --purple:#b294bb; --rose:#e06c75;
+    --green:#83c167; --muted:#7d8494;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:Georgia,'Times New Roman',serif;
+       display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:14px}
+  h1{font-size:clamp(17px,2.6vw,24px);font-weight:400;letter-spacing:.5px;margin:6px 0 2px}
+  h1 em{color:var(--amber);font-style:italic}
+  .sub{color:var(--muted);font-size:12.5px;margin-bottom:10px;font-style:italic}
+  .stage{width:min(960px,100%);aspect-ratio:16/9;background:#000;border-radius:8px;
+         box-shadow:0 8px 40px rgba(0,0,0,.6);position:relative;overflow:hidden}
+  canvas{width:100%;height:100%;display:block}
+  .controls{width:min(960px,100%);display:flex;align-items:center;gap:10px;margin-top:10px}
+  button{background:var(--panel);color:var(--ink);border:1px solid #262b38;border-radius:6px;
+         padding:7px 14px;font-family:inherit;font-size:13px;cursor:pointer}
+  button:hover{border-color:var(--amber);color:var(--amber)}
+  .bar{flex:1;height:8px;background:var(--panel);border-radius:4px;cursor:pointer}
+  .fill{height:100%;background:var(--amber);border-radius:4px;width:0%}
+  .time{font-size:12px;color:var(--muted);font-family:Menlo,monospace;min-width:86px;text-align:right}
+  .chapters{width:min(960px,100%);display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .chip{font-size:11px;color:var(--muted);border:1px solid #262b38;border-radius:12px;
+        padding:3px 10px;cursor:pointer;font-family:Menlo,monospace}
+  .chip:hover{color:var(--ink);border-color:var(--muted)}
+  .chip.on{color:var(--amber);border-color:var(--amber)}
+</style>
+</head>
+<body>
+  <h1>Extending the Platform <em>— from intuition to a prototype anyone can run</em></h1>
+  <div class="sub">part three of the visual essay · press play</div>
+
+  <div class="stage"><canvas id="cv" width="1920" height="1080"></canvas></div>
+
+  <div class="controls">
+    <button id="play">▶ Play</button>
+    <button id="restart">↺</button>
+    <div class="bar" id="bar"><div class="fill" id="fill"></div></div>
+    <div class="time" id="time">0:00 / 2:30</div>
+  </div>
+  <div class="chapters" id="chapters"></div>
+
+<script>
+(()=>{
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+const S=2;
+const COL={bg:'#000000',ink:'#e8e6df',muted:'#7d8494',
+  blue:'#58c4dd',teal:'#39b8a0',amber:'#f0c674',purple:'#b294bb',rose:'#e06c75',
+  green:'#83c167'};
+const DUR=150;
+let t=0,playing=false,last=null;
+
+// ===================== AUDIO LAYER =====================
+// Narration = one clip per caption, played at that caption's start time.
+// SFX = subtle cinematic cues at animation events. Ambient = a looping bed.
+// Audio files come from generate_audio.py; this degrades silently if absent.
+const MOVIE_ID='m3';
+const NAR_TIMES=[0,6,12,18,24,31,38,45,52,59,66,73,78,85,92,99,104,110,116,124,132,140,146];
+const SFX_CUES=[[25,'blip',0.3],[32,'blip',0.3],[39,'blip',0.3],[46,'blip',0.3],[53,'blip',0.3],[60,'blip',0.3],[67,'blip',0.3],[78,'whoosh',0.3],[92.5,'boot',0.4],[102,'error',0.4],[105.8,'blip',0.35],[109.5,'success',0.4],[121,'blip',0.3],[124,'whoosh',0.3]];
+const AUDIO=(()=>{
+  const base='audio/'+MOVIE_ID+'/';
+  const nar=NAR_TIMES.map((_,i)=>{const a=new Audio(base+'nar_'+String(i).padStart(2,'0')+'.mp3');a.preload='auto';return a;});
+  const amb=new Audio('audio/sfx/ambient_drone.mp3');amb.loop=true;amb.volume=0.16;
+  let prev=-1,enabled=true,unlocked=false,cur=null;
+  const stopNar=()=>{nar.forEach(a=>{if(!a.paused)a.pause();a.currentTime=0;});cur=null;};
+  const fireNar=i=>{if(!enabled)return;if(cur&&cur!==nar[i]){cur.pause();cur.currentTime=0;}const a=nar[i];try{a.currentTime=0;a.play().catch(()=>{});}catch(e){}cur=a;};
+  const fireSfx=(n,g)=>{if(!enabled)return;const a=new Audio('audio/sfx/'+n+'.mp3');a.volume=g;a.play().catch(()=>{});};
+  return {
+    onPlay(){unlocked=true;if(enabled)amb.play().catch(()=>{});},
+    onPause(){amb.pause();if(cur&&!cur.paused)cur.pause();},
+    seek(){stopNar();prev=-1;},
+    tick(now,isPlaying){
+      if(!isPlaying)return;
+      if(prev<0){prev=now;return;}
+      if(now<prev-0.05||now-prev>0.6){stopNar();prev=now;if(enabled&&amb.paused)amb.play().catch(()=>{});return;}
+      NAR_TIMES.forEach((tt,i)=>{if(prev<tt&&now>=tt)fireNar(i);});
+      SFX_CUES.forEach(c=>{if(prev<c[0]&&now>=c[0])fireSfx(c[1],c[2]);});
+      prev=now;
+    },
+    toggle(){enabled=!enabled;if(!enabled){stopNar();amb.pause();}else if(unlocked)amb.play().catch(()=>{});return enabled;}
+  };
+})();
+// =======================================================
+
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const seg=(t,a,b)=>clamp((t-a)/(b-a),0,1);
+const ease=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+function lerp(a,b,x){return a+(b-a)*x}
+
+function txt(str,x,y,size,color,align='center',font='Georgia',alpha=1,style=''){
+  ctx.save();ctx.globalAlpha=alpha;ctx.fillStyle=color;
+  ctx.font=`${style} ${size*S}px ${font}`;ctx.textAlign=align;ctx.textBaseline='middle';
+  ctx.fillText(str,x*S,y*S);ctx.restore();
+}
+function writeOn(str,x,y,size,color,p,align='center',font='Georgia',style=''){
+  const n=Math.round(str.length*clamp(p,0,1));
+  txt(str.slice(0,n),x,y,size,color,align,font,1,style);
+}
+function rrect(x,y,w,h,r,fill,stroke,lw=1.6,alpha=1,dash=null){
+  ctx.save();ctx.globalAlpha=alpha;
+  ctx.beginPath();ctx.roundRect(x*S,y*S,w*S,h*S,r*S);
+  if(fill){ctx.fillStyle=fill;ctx.fill()}
+  if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=lw*S;
+    if(dash)ctx.setLineDash(dash.map(d=>d*S));ctx.stroke()}
+  ctx.restore();
+}
+function line(x1,y1,x2,y2,color,w,p=1,dash=null,alpha=1){
+  if(p<=0)return;
+  ctx.save();ctx.globalAlpha=alpha;ctx.strokeStyle=color;ctx.lineWidth=w*S;ctx.lineCap='round';
+  if(dash)ctx.setLineDash(dash.map(d=>d*S));
+  ctx.beginPath();ctx.moveTo(x1*S,y1*S);
+  ctx.lineTo(lerp(x1,x2,p)*S,lerp(y1,y2,p)*S);ctx.stroke();ctx.restore();
+}
+function glowDot(x,y,color,r=6,alpha=1){
+  ctx.save();ctx.globalAlpha=alpha;
+  const g=ctx.createRadialGradient(x*S,y*S,0,x*S,y*S,r*3*S);
+  g.addColorStop(0,color);g.addColorStop(1,'transparent');
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(x*S,y*S,r*3*S,0,7);ctx.fill();
+  ctx.fillStyle=color;ctx.beginPath();ctx.arc(x*S,y*S,r*S,0,7);ctx.fill();ctx.restore();
+}
+
+// ---------- the engine ----------
+const ENG={x:480,y:238,w:180,h:92};
+function drawEngine(now,alpha=1,label=true){
+  rrect(ENG.x-ENG.w/2,ENG.y-ENG.h/2,ENG.w,ENG.h,14,'#0d1a20',COL.blue,2.2,alpha);
+  if(label){
+    txt('the loop',ENG.x,ENG.y-12,17,COL.blue,'center','Georgia',alpha,'italic');
+    txt('state · exec · route · ctrl · mem',ENG.x,ENG.y+12,9,COL.muted,'center','Menlo, monospace',alpha);
+  }
+  // idle orbit — the engine is always running
+  const th=now*2.2;
+  const rx=ENG.w/2+14,ry=ENG.h/2+14;
+  glowDot(ENG.x+Math.cos(th)*rx,ENG.y+Math.sin(th)*ry,COL.blue,4,alpha*.9);
+}
+
+// ---------- mod slots ----------
+const SLOTS=[
+ {t0:25,x:242,y:112,w:172,c:COL.rose,  name:'CLAUDE.md',        path:'the operating manual',        inside:true},
+ {t0:32,x:168,y:238,w:172,c:COL.amber, name:'/commands',        path:'.claude/commands/*.md',inside:true},
+ {t0:39,x:242,y:362,w:172,c:COL.purple,name:'hooks',            path:'.claude/hooks/*.sh',   inside:true},
+ {t0:46,x:718,y:112,w:172,c:COL.green, name:'skills',           path:'skills/*/SKILL.md',    inside:true},
+ {t0:53,x:792,y:238,w:172,c:COL.blue,  name:'subagents',        path:'delegated, typed report',inside:true},
+ {t0:60,x:330,y:472,w:196,c:COL.teal,  name:'MCP servers',      path:'external integrations',inside:false},
+ {t0:67,x:630,y:472,w:196,c:COL.ink,   name:'headless / SDK',   path:'claude -p · cron · CI',inside:false},
+];
+function drawSlot(s,now,alpha=1,glowAll=0){
+  const born=ease(seg(now,s.t0,s.t0+1.4));
+  if(born<=0)return;
+  const a=alpha*born;
+  const hot=(now>=s.t0&&now<s.t0+6)||glowAll>0;
+  // stub to engine
+  const ex=ENG.x+(s.x>ENG.x?-ENG.w/2:ENG.w/2)*(Math.abs(s.x-ENG.x)>110?1:0);
+  line(s.x,s.y,lerp(s.x,ENG.x,0.55),lerp(s.y,ENG.y,0.55),hot?s.c:'#2a2f3d',1.4,born,s.inside?null:[4,4],a*.8);
+  rrect(s.x-s.w/2,s.y-22,s.w,44,9,'#0d1017',hot?s.c:'#3a4152',hot?2.2:1.4,a,s.inside?null:[5,4]);
+  txt(s.name,s.x,s.y-7,13.5,hot?s.c:COL.ink,'center','Menlo, monospace',a,'bold');
+  txt(s.path,s.x,s.y+10,9.5,COL.muted,'center','Menlo, monospace',a);
+}
+
+// ---------- file tree (build montage) ----------
+const TREE=[
+ [80.0,'workbench/',COL.ink,0],
+ [81.5,'CLAUDE.md',COL.rose,1],
+ [84.0,'.claude/commands/pick-task.md',COL.amber,1],
+ [86.5,'.claude/hooks/scope-guard.sh',COL.purple,1],
+ [88.5,'.claude/settings.json',COL.purple,1],
+ [90.0,'skills/validate/SKILL.md',COL.green,1],
+ [91.5,'validation/approved.csv',COL.green,1],
+];
+function drawTree(now,alpha=1){
+  rrect(46,96,268,330,10,'#0a0c12','#262b38',1.4,alpha);
+  txt('the entire system',180,116,12,COL.muted,'center','Georgia',alpha,'italic');
+  TREE.forEach((f,i)=>{
+    const born=seg(now,f[0],f[0]+0.6);
+    if(born<=0)return;
+    const y=142+i*30;
+    txt((f[3]?'├ ':'')+f[1],64,y,11.5,f[2],'left','Menlo, monospace',alpha*born);
+    if(born>=1&&now>f[0]+0.8)txt('✓',296,y,12,COL.green,'center','Menlo, monospace',alpha);
+  });
+  if(now>92)txt('7 files. that’s the prototype.',180,410,11.5,COL.amber,'center','Georgia',alpha*seg(now,92,93.5),'italic');
+}
+
+// ---------- terminal (build montage) ----------
+const TERM=[
+ [79.0,'$ mkdir workbench && cd workbench',COL.teal],
+ [92.5,'$ claude',COL.teal],
+ [94.2,'› loaded CLAUDE.md · 1 command · hooks armed',COL.muted],
+ [96.5,'› /pick-task PROD-014',COL.amber],
+ [98.5,'› reading task packet… objective + constraints',COL.muted],
+ [100.5,'› Edit(config.yaml)',COL.ink],
+ [102.0,'  hook: BLOCKED ✗ — file not in task scope',COL.rose],
+ [104.0,'› Edit(allocation.py)',COL.ink],
+ [105.8,'  hook: scope ✓',COL.purple],
+ [107.5,'› Bash(pytest) …',COL.ink],
+ [109.5,'  12 passed · reconciles to approved.csv ✓',COL.green],
+ [112.0,'› done — task moved to review/',COL.blue],
+ [121.0,'$ git push origin main',COL.teal],
+];
+function drawTerminal(now,alpha=1){
+  rrect(340,96,566,330,10,'#0a0e0a',COL.teal,1.6,alpha);
+  rrect(340,96,566,24,10,'#0f1a12',null,0,alpha);
+  txt('● ● ●',366,108,10,'#3a4152','left','Menlo, monospace',alpha);
+  let row=0;
+  TERM.forEach(l=>{
+    if(now<l[0])return;
+    const y=140+row*21;row++;
+    if(y>410)return;
+    writeOn(l[1],358,y,11.5,l[2],seg(now,l[0],l[0]+1.0),'left','Menlo, monospace');
+  });
+  // mini loop spinning while the run is live
+  if(now>96&&now<113){
+    const th=now*4;
+    ctx.save();ctx.strokeStyle=COL.blue;ctx.lineWidth=1.6*S;
+    ctx.beginPath();ctx.arc(872*S,140*S,12*S,th,th+4.6);ctx.stroke();ctx.restore();
+    glowDot(872+Math.cos(th)*12,140+Math.sin(th)*12,COL.blue,3);
+  }
+}
+
+// ---------- captions ----------
+const CAPS=[
+ [0,6,'Intermission. You’ve built the loop, and watched it shipped.'],
+ [6,12,'Now the practical question: how do you shape it — without building anything from scratch?'],
+ [12,18,'Think of a franchise. The value was never any single storefront —'],
+ [18,24,'— it’s the operating playbook. And this platform exposes seven extension points for yours.'],
+ [24,31,'CLAUDE.md — the operating manual. Rules and context, loaded before every session begins.'],
+ [31,38,'Slash commands — standard procedures. A full workflow bound to a single typed verb.'],
+ [38,45,'Hooks — compliance controls. Enforced in code, whether the model agrees or not.'],
+ [45,52,'Skills — domain expertise in folders, loaded exactly when a task calls for it.'],
+ [52,59,'Subagents — delegated specialists. Fresh context, one narrow mandate, a typed report back.'],
+ [59,66,'MCP servers — integrations. The loop reaches external systems: APIs, databases, applications.'],
+ [66,73,'Headless mode — unattended operations. Scheduled runs, CI, scripts: no one at the keyboard.'],
+ [73,78,'Seven extension points. One platform. Now — what does real life actually look like?'],
+ [78,85,'Day one. An empty folder, a rulebook, and one verb: /pick-task.'],
+ [85,92,'One hook — ten lines of bash — becomes law: touch only the files in the task packet.'],
+ [92,99,'Then a coworker sits down. Nothing to invent. One command.'],
+ [99,104,'The loop runs — and watch: it strays toward the wrong file...'],
+ [104,110,'...the hook blocks it. Deterministically. And the model simply corrects course.'],
+ [110,116,'Tests pass against the approved reference. “Done” is mechanical — not a feeling.'],
+ [116,124,'Total infrastructure: seven files in a folder. Which means... it’s just git.'],
+ [124,132,'A teammate clones. Types claude. The whole system boots on their machine, identically.'],
+ [132,140,'Rules, verbs, laws, validation — nothing to install, no server, no platform, no permission slip.'],
+ [140,146,'From primitive intuition to a prototype anyone can run — today.'],
+ [146,150,'Configuration is composition. The playbook is the product.'],
+];
+function drawCaption(now){
+  const c=CAPS.find(c=>now>=c[0]&&now<c[1]);
+  if(!c)return;
+  const a=Math.min(seg(now,c[0],c[0]+0.5),1-seg(now,c[1]-0.5,c[1]));
+  ctx.save();ctx.globalAlpha=a*0.85;
+  ctx.fillStyle='#000';ctx.fillRect(0,500*S,960*S,40*S);ctx.restore();
+  txt(c[2],480,520,15.5,COL.ink,'center','Georgia',a,'italic');
+}
+
+// ---------- scenes ----------
+function scene(now){
+  ctx.fillStyle=COL.bg;ctx.fillRect(0,0,1920,1080);
+
+  // S0+S1: engine + mod slots (0-78)
+  if(now<78){
+    const fade=1-seg(now,76.5,78);
+    ctx.save();ctx.globalAlpha=fade;
+    writeOn('Extending the Platform',480,54,30,COL.ink,seg(now,0.3,2.2));
+    txt('— part three —',480,84,13,COL.muted,'center','Georgia',seg(now,1.5,3)*fade,'italic');
+
+    const eng=ease(seg(now,4,6));
+    if(eng>0){ctx.save();ctx.globalAlpha=eng*fade;drawEngine(now,1);ctx.restore()}
+
+    // session boundary appears
+    const bnd=ease(seg(now,22,24.5));
+    if(bnd>0){
+      rrect(120,84,720,300,22,null,'#2a2f3d',1.4,bnd*fade,[7,6]);
+      txt('inside the session',150,398,10.5,COL.muted,'left','Menlo, monospace',bnd*fade,'italic');
+      txt('external systems',810,398,10.5,COL.muted,'right','Menlo, monospace',bnd*fade,'italic');
+    }
+    const glowAll=seg(now,73,75);
+    SLOTS.forEach(s=>drawSlot(s,now,fade,glowAll));
+    if(glowAll>0)txt('seven extension points · one platform',480,462,15,COL.amber,'center','Georgia',glowAll*fade,'italic');
+    ctx.restore();
+  }
+
+  // S2: build montage (78-124)
+  if(now>=78&&now<124){
+    const a=ease(seg(now,78,79.5));
+    ctx.save();ctx.globalAlpha=a;
+    txt('real life: building the enablement workbench',480,66,17,COL.ink,'center','Georgia',a,'italic');
+    drawTree(now,a);
+    drawTerminal(now,a);
+    ctx.restore();
+  }
+
+  // S3: clone + closing (124-150)
+  if(now>=124){
+    const a=ease(seg(now,124,126));
+    // two terminals side by side
+    const t1x=110,t2x=530,ty=120,tw=330,th2=150;
+    ctx.save();ctx.globalAlpha=a;
+    rrect(t1x,ty,tw,th2,10,'#0a0e0a',COL.teal,1.5,a);
+    txt('you',t1x+tw/2,ty-14,11,COL.muted,'center','Menlo, monospace',a,'italic');
+    txt('$ git push origin main',t1x+16,ty+34,11.5,COL.teal,'left','Menlo, monospace',a);
+    txt('✓ workbench → shared repo',t1x+16,ty+58,11.5,COL.green,'left','Menlo, monospace',a);
+
+    const p2=seg(now,127,129);
+    line(t1x+tw,ty+th2/2,t2x,ty+th2/2,'#3a4152',1.5,p2,[5,5],a);
+    if(p2>0){
+      rrect(t2x,ty,tw,th2,10,'#0a0e0a',COL.teal,1.5,a*p2);
+      txt('teammate — any machine',t2x+tw/2,ty-14,11,COL.muted,'center','Menlo, monospace',a*p2,'italic');
+      writeOn('$ git clone …/workbench && claude',t2x+16,ty+34,11.5,COL.teal,seg(now,128,130.5),'left','Menlo, monospace');
+      writeOn('› loaded CLAUDE.md · 1 command · hooks armed',t2x+16,ty+58,10.5,COL.muted,seg(now,131,133),'left','Menlo, monospace');
+      writeOn('› /pick-task PROD-015',t2x+16,ty+82,11.5,COL.amber,seg(now,133.5,135),'left','Menlo, monospace');
+      writeOn('  same rules · same laws · same validation',t2x+16,ty+106,10.5,COL.purple,seg(now,135.5,138),'left','Menlo, monospace');
+    }
+    // tiny loop glyphs under both
+    if(now>136){
+      [t1x+tw/2,t2x+tw/2].forEach(cx=>{
+        const th3=now*4;
+        ctx.strokeStyle=COL.blue;ctx.lineWidth=1.4*S;
+        ctx.beginPath();ctx.arc(cx*S,(ty+th2+34)*S,10*S,th3,th3+4.6);ctx.stroke();
+        glowDot(cx+Math.cos(th3)*10,ty+th2+34+Math.sin(th3)*10,COL.blue,2.6,a);
+      });
+    }
+    const closing=seg(now,140.5,143.5);
+    if(closing>0){
+      writeOn('Configuration is composition.',480,368,25,COL.ink,closing);
+      txt('the playbook is the product',480,400,14,COL.muted,'center','Georgia',seg(now,144,146),'italic');
+      txt('git clone && claude',480,432,13,COL.amber,'center','Menlo, monospace',seg(now,146,148));
+    }
+    ctx.restore();
+  }
+
+  drawCaption(now);
+}
+
+// ---------- playback ----------
+const playBtn=document.getElementById('play'),bar=document.getElementById('bar'),
+      fill=document.getElementById('fill'),timeEl=document.getElementById('time');
+function fmt(s){s=Math.floor(s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+function frame(ts){
+  if(playing){
+    if(last!=null)t+=(ts-last)/1000;
+    last=ts;
+    if(t>=DUR){t=DUR;playing=false;playBtn.textContent='▶ Replay';last=null;AUDIO.onPause()}
+  }
+  scene(t);
+  AUDIO.tick(t,playing);
+  fill.style.width=(t/DUR*100)+'%';
+  timeEl.textContent=fmt(t)+' / '+fmt(DUR);
+  updateChips();
+  requestAnimationFrame(frame);
+}
+playBtn.onclick=()=>{if(t>=DUR)t=0;playing=!playing;last=null;
+  playBtn.textContent=playing?'❚❚ Pause':'▶ Play';
+  if(playing)AUDIO.onPlay();else AUDIO.onPause()};
+document.getElementById('restart').onclick=()=>{t=0;last=null;AUDIO.seek();scene(0)};
+bar.onclick=e=>{const r=bar.getBoundingClientRect();
+  t=clamp((e.clientX-r.left)/r.width,0,1)*DUR;last=null;AUDIO.seek()};
+const CH=[[0,'the platform'],[24,'extension points'],[78,'build it live'],[99,'hook blocks ✗'],[116,'push'],[124,'clone & run'],[140,'closing']];
+const chWrap=document.getElementById('chapters');
+CH.forEach(([tt,name])=>{
+  const b=document.createElement('div');b.className='chip';b.textContent=name;
+  b.onclick=()=>{t=tt;last=null;if(!playing){playing=true;playBtn.textContent='❚❚ Pause'}};
+  b.dataset.t=tt;chWrap.appendChild(b);
+});
+function updateChips(){
+  const chips=[...chWrap.children];
+  chips.forEach((c,i)=>{
+    const start=+c.dataset.t,end=i<chips.length-1?+chips[i+1].dataset.t:DUR;
+    c.classList.toggle('on',t>=start&&t<end);
+  });
+}
+const muteBtn=document.createElement('button');muteBtn.textContent='🔊';muteBtn.title='Mute / unmute audio';
+document.querySelector('.controls').appendChild(muteBtn);
+muteBtn.onclick=()=>{muteBtn.textContent=AUDIO.toggle()?'🔊':'🔇';};
+scene(0);
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
