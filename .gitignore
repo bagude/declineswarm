@@ -4,3 +4,6 @@ __pycache__/
 plots/
 ablation_results/
 AGENT_BRIEF_V3.md
+
+# Delivered build artifact (sent directly to user, not tracked)
+movies.zip
